@@ -1,71 +1,30 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_communication/helper/helper_function.dart';
-import 'package:flutter_communication/pages/auth/login_page.dart';
-import 'package:flutter_communication/pages/home_page.dart';
-import 'package:flutter_communication/shared/constants.dart';
 
-void main() async {
+import 'core/constants/app_info.dart';
+import 'core/constants/themes.dart';
+import 'dependency_injection.dart' as di;
+import 'feature/presentation/page/auth/sign_in/auth_sign_in_page.dart';
+import 'on_generate_route.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: Constants.apiKey,
-        appId: Constants.appId,
-        messagingSenderId: Constants.messagingSenderId,
-        projectId: Constants.projectId,
-      ),
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
-
-  runApp(const MyApp());
+  await Firebase.initializeApp();
+  await di.init();
+  runApp(const Application());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool _isSignedIn = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getUserLoggedInStatus();
-  }
-
-  getUserLoggedInStatus() async {
-    await HelperFunctions.getUserLoggedInStatus().then((value) {
-      if (value != null) {
-        setState(() {
-          _isSignedIn = value;
-        });
-      }
-    });
-  }
+class Application extends StatelessWidget {
+  const Application({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarBrightness: Brightness.light,
-            statusBarIconBrightness: Brightness.light,
-            statusBarColor: Colors.transparent,
-          ),
-        ),
-      ),
       debugShowCheckedModeBanner: false,
-      home: _isSignedIn ? const HomePage() : const LoginPage(),
+      theme: AppTheme.theme,
+      title: AppInfo.name,
+      initialRoute: AuthSignInPage.route,
+      onGenerateRoute: OnGenerateRoute.route,
     );
   }
 }
