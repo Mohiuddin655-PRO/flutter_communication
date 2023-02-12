@@ -4,13 +4,14 @@ import '../../../widget/screen.dart';
 import 'auth_forget_password_body.dart';
 
 class AuthForgetPasswordPage extends StatelessWidget {
-  static const String route = "auth_forget_password_page";
+  static const String route = "auth_forget_password";
 
   const AuthForgetPasswordPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Screen(
+      hideToolbar: true,
       background: Colors.white,
       body: AuthForgetPasswordBody(),
     );
