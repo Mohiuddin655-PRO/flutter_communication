@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_communication/dependency_injection.dart';
 import 'package:flutter_communication/feature/presentation/page/home/home_drawer.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_body.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
 import 'package:flutter_communication/feature/presentation/page/search/search_page.dart';
+import 'package:flutter_communication/other/helper/helper_function.dart';
 
 import '../../../../core/constants/app_info.dart';
 import '../../widget/screen.dart';
@@ -14,17 +16,22 @@ class HomePage extends StatefulWidget {
   static const String title = "Home";
   static const String route = "home";
 
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late final helper = locator<UserHelper>();
+  late final user = helper.user;
   int index = 0;
 
   @override
   Widget build(BuildContext context) {
+    print("User : $user");
     return Screen(
       title: index == 0 ? AppInfo.fullName : ProfilePage.title,
       titleAllCaps: true,

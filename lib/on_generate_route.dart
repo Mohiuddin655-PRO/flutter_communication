@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
 import 'package:flutter_communication/feature/presentation/page/search/search_page.dart';
+import 'package:flutter_communication/feature/presentation/page/splash/splash_page.dart';
 
 import 'dependency_injection.dart';
 import 'feature/presentation/cubits/auth_cubit.dart';
@@ -17,6 +18,8 @@ class OnGenerateRoute {
   static Route<dynamic> route(RouteSettings settings) {
     switch (settings.name) {
       //Default
+      case SplashPage.route:
+        return routeBuilder(widget: _splash());
       case HomePage.route:
         return routeBuilder(widget: _home());
       case AuthSignInPage.route:
@@ -43,14 +46,32 @@ MaterialPageRoute routeBuilder({required Widget widget}) {
 }
 
 // Default
-Widget _home() {
+Widget _splash() {
   return MultiBlocProvider(
     providers: [
+      BlocProvider(
+        create: (context) => locator<AuthCubit>(),
+      ),
       BlocProvider(
         create: (context) => locator<UserCubit>(),
       ),
     ],
-    child: const HomePage(),
+    child: const SplashPage(),
+  );
+}
+
+// Default
+Widget _home() {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => locator<AuthCubit>(),
+      ),
+      BlocProvider(
+        create: (context) => locator<UserCubit>(),
+      ),
+    ],
+    child: HomePage(),
   );
 }
 

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_communication/other/helper/helper_function.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:local_auth/local_auth.dart';
@@ -11,6 +12,7 @@ import 'core/common/data_source_impls/keep_user_data_source_impl.dart';
 import 'core/common/data_sources/auth_data_source.dart';
 import 'core/common/data_sources/firebase_data_source.dart';
 import 'core/common/data_sources/keep_user_data_source.dart';
+import 'core/utils/helpers/preference_helper.dart';
 import 'feature/data/remote/data_sources/user_data_source.dart';
 import 'feature/data/remote/repository_impls/auth_repository_impl.dart';
 import 'feature/data/remote/repository_impls/user_repository_impl.dart';
@@ -104,6 +106,13 @@ Future<void> init() async {
         localAuth: locator(),
       ));
   locator.registerLazySingleton<FirebaseDataSource>(() => UserDataSource());
+
+  locator.registerLazySingleton<PreferenceHelper>(
+          () => PreferenceHelper.of(preferences: locator()));
+
+  locator.registerLazySingleton<UserHelper>(
+        () => UserHelper(helper: locator()),
+  );
 
   //External
   final local = await SharedPreferences.getInstance();

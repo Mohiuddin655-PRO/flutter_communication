@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_communication/dependency_injection.dart';
+import 'package:flutter_communication/other/helper/helper_function.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../core/common/responses/response.dart';
@@ -30,7 +32,8 @@ class _AuthSignInBodyState extends State<AuthSignInBody> {
   bool? isGoogleLoginDone;
   late String email, password;
   late bool isValidEmail, isValidPassword;
-  late AuthCubit cubit = context.read();
+  late AuthCubit cubit = context.read<AuthCubit>();
+  late UserHelper userHelper = locator<UserHelper>();
 
   @override
   Widget build(BuildContext context) {
@@ -186,12 +189,13 @@ class _AuthSignInBodyState extends State<AuthSignInBody> {
     return true;
   }
 
-  void _check(Response response) {
+  void _check(Response response) async {
     isLoginDone = true;
     if (response.isSuccessful || response.snapshot != null) {
       final data =
           response.getSnapshot<DataSnapshot>()?.value ?? response.result;
       final user = UserEntity.from(data);
+      saveData(user);
       Navigator.pushNamedAndRemoveUntil(
         context,
         HomePage.route,
@@ -202,4 +206,6 @@ class _AuthSignInBodyState extends State<AuthSignInBody> {
       Toast.message(response.message);
     }
   }
+
+  void saveData(UserEntity entity) async => await userHelper.saveUser(entity);
 }

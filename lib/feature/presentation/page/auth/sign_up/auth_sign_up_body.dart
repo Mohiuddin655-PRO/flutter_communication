@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/common/responses/response.dart';
 import '../../../../../core/common/widgets/toast.dart';
 import '../../../../../core/utils/validators/validator.dart';
+import '../../../../../dependency_injection.dart';
+import '../../../../../other/helper/helper_function.dart';
 import '../../../../domain/entities/user_entity.dart';
 import '../../../cubits/auth_cubit.dart';
 import '../../../widget/button.dart';
@@ -22,7 +24,8 @@ class AuthSignUpBody extends StatefulWidget {
 class _AuthSignUpBodyState extends State<AuthSignUpBody> {
   late String name, email, password;
   late bool isValidName, isValidEmail, isValidPassword;
-  late AuthCubit cubit = context.read();
+  late AuthCubit cubit = context.read<AuthCubit>();
+  late UserHelper userHelper = locator<UserHelper>();
 
   @override
   Widget build(BuildContext context) {
@@ -138,11 +141,12 @@ class _AuthSignUpBodyState extends State<AuthSignUpBody> {
     return true;
   }
 
-  void _check(Response response) {
+  void _check(Response response) async {
     if (response.isSuccessful || response.snapshot != null) {
       final data =
           response.getSnapshot<DataSnapshot>()?.value ?? response.result;
       final user = UserEntity.from(data);
+      saveData(user);
       Navigator.pushNamedAndRemoveUntil(
         context,
         HomePage.route,
@@ -153,4 +157,6 @@ class _AuthSignUpBodyState extends State<AuthSignUpBody> {
       Toast.message(response.message);
     }
   }
+
+  void saveData(UserEntity entity) async => await userHelper.saveUser(entity);
 }
