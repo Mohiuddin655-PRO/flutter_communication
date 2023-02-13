@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Screen extends StatefulWidget {
   final String? title;
+  final bool titleAllCaps;
   final double? titleSize;
   final Color? titleColor;
   final FontWeight? titleStyle;
@@ -26,6 +28,7 @@ class Screen extends StatefulWidget {
     this.drawer,
     this.hideToolbar = false,
     this.title,
+    this.titleAllCaps = false,
     this.titleCenter = false,
     this.titleColor,
     this.titleSize,
@@ -47,6 +50,8 @@ class Screen extends StatefulWidget {
 class _ScreenState extends State<Screen> {
   @override
   Widget build(BuildContext context) {
+    final title =
+        widget.titleAllCaps ? widget.title?.toUpperCase() : widget.title;
     return Scaffold(
       extendBodyBehindAppBar: widget.transparentAppBar,
       appBar: AppBar(
@@ -54,8 +59,11 @@ class _ScreenState extends State<Screen> {
         elevation: widget.elevation,
         centerTitle: widget.titleCenter,
         actions: widget.actions,
+        systemOverlayStyle: widget.transparentAppBar
+            ? const SystemUiOverlayStyle(statusBarColor: Colors.transparent)
+            : null,
         title: Text(
-          widget.title ?? "",
+          title ?? "",
           style: TextStyle(
             color: widget.titleColor,
             fontWeight: widget.titleStyle,

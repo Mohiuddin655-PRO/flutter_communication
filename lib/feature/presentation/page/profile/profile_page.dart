@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_info.dart';
 import '../../widget/screen.dart';
 import 'profile_body.dart';
 
 class ProfilePage extends StatefulWidget {
+  static const String title = "Profile";
   static const String route = "profile";
 
   const ProfilePage({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return const Screen(
-      title: AppInfo.fullName,
+      title: ProfilePage.title,
       transparentAppBar: true,
       fixedContent: false,
       hideLeadingButton: true,

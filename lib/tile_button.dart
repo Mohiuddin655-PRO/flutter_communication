@@ -75,9 +75,9 @@ class _TileButtonState extends State<TileButton> {
               width: widget.width,
               height: widget.padding == null ? widget.height : null,
               padding: widget.padding ??
-                  const EdgeInsets.symmetric(
+                  EdgeInsets.symmetric(
                     horizontal: 24,
-                    vertical: 12,
+                    vertical: widget.height != null ? 0 : 12,
                   ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

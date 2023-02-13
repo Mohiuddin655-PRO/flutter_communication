@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_communication/feature/presentation/page/profile/profile_content.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({
@@ -8,7 +9,7 @@ class ProfileBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text("Profile"),
+      child: Text(ProfileContent.title),
     );
   }
 }

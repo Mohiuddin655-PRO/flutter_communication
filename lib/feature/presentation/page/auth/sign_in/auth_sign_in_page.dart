@@ -8,6 +8,7 @@ import '../../home/home_page.dart';
 import 'auth_sign_in_body.dart';
 
 class AuthSignInPage extends StatelessWidget {
+  static const String title = "Sign in";
   static const String route = "auth_sign_in";
 
   const AuthSignInPage({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class AuthSignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Screen(
+      title: title,
       hideToolbar: true,
       background: Colors.white,
       body: BlocConsumer<AuthCubit, CubitState>(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/core/constants/colors.dart';
+import 'package:flutter_communication/core/utils/states/state_value.dart';
 import 'package:flutter_communication/feature/presentation/widget/drawer_navigator.dart';
 
+import '../../../../core/constants/colors.dart';
 import '../../../../tile_button.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -17,119 +18,75 @@ class HomeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DrawerNavigator(
-      header: const DrawerNavigatorHeader(
+      header: DrawerNavigatorHeader(
         title: "Chatty",
+        titleColor: Colors.white,
+        titleStyle: FontWeight.bold,
+        image: const Icon(
+          Icons.account_circle,
+          color: Colors.white,
+          size: 120,
+        ),
+        background: Theme.of(context).primaryColor,
       ),
-      actions: [
-        TileButton(
-          text: "Home",
-          borderRadius: 12,
-          selected: currentIndex == 0,
-          iconPadding: const EdgeInsets.only(right: 24),
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          iconState: (state) {
-            if (state == ButtonState.selected) {
-              return Icons.home;
-            } else {
-              return Icons.home_outlined;
-            }
-          },
-          textStyleState: (state) {
-            if (state == ButtonState.selected) {
-              return FontWeight.bold;
-            } else {
-              return FontWeight.normal;
-            }
-          },
-          colorState: (state) {
-            if (state == ButtonState.selected) {
-              return KColors.primary;
-            } else {
-              return KColors.primary.withOpacity(0.5);
-            }
-          },
-          backgroundState: (state) {
-            if (state == ButtonState.selected) {
-              return KColors.primary.withOpacity(0.05);
-            } else {
-              return Colors.transparent;
-            }
-          },
-          onClick: () => onStateChanged?.call(0),
+      action: DrawerAction(
+        drawerCloseable: false,
+        selectedIndex: currentIndex,
+        borderRadius: 150,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        iconPadding: const EdgeInsets.only(
+          right: 16,
         ),
-        TileButton(
-          text: "Profile",
-          borderRadius: 12,
-          selected: currentIndex == 1,
-          iconPadding: const EdgeInsets.only(right: 24),
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          iconState: (state) {
-            if (state == ButtonState.selected) {
-              return Icons.person;
-            } else {
-              return Icons.person_outline;
-            }
-          },
-          textStyleState: (state) {
-            if (state == ButtonState.selected) {
-              return FontWeight.bold;
-            } else {
-              return FontWeight.normal;
-            }
-          },
-          colorState: (state) {
-            if (state == ButtonState.selected) {
-              return KColors.primary;
-            } else {
-              return KColors.primary.withOpacity(0.5);
-            }
-          },
-          backgroundState: (state) {
-            if (state == ButtonState.selected) {
-              return KColors.primary.withOpacity(0.05);
-            } else {
-              return Colors.transparent;
-            }
-          },
-          onClick: () => onStateChanged?.call(1),
-        ),
-        TileButton(
-          text: "Logout",
-          borderRadius: 12,
-          selected: currentIndex == 2,
-          iconPadding: const EdgeInsets.only(right: 24),
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          iconState: (state) {
-            if (state == ButtonState.selected) {
-              return Icons.exit_to_app;
-            } else {
-              return Icons.exit_to_app_outlined;
-            }
-          },
-          textStyleState: (state) {
-            if (state == ButtonState.selected) {
-              return FontWeight.bold;
-            } else {
-              return FontWeight.normal;
-            }
-          },
-          colorState: (state) {
-            if (state == ButtonState.selected) {
-              return KColors.primary;
-            } else {
-              return KColors.primary.withOpacity(0.5);
-            }
-          },
-          backgroundState: (state) {
-            if (state == ButtonState.selected) {
-              return KColors.primary.withOpacity(0.05);
-            } else {
-              return Colors.transparent;
-            }
-          },
-          onClick: () => onStateChanged?.call(2),
-        ),
-      ],
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        textStyleState: (state) {
+          if (state == ButtonState.selected) {
+            return FontWeight.bold;
+          } else {
+            return FontWeight.normal;
+          }
+        },
+        colorState: (state) {
+          if (state == ButtonState.selected) {
+            return Colors.white;
+          } else {
+            return KColors.primary.withOpacity(0.5);
+          }
+        },
+        backgroundState: (state) {
+          if (state == ButtonState.selected) {
+            return KColors.primary;
+          } else {
+            return Colors.transparent;
+          }
+        },
+        items: const [
+          DrawerItem(
+            key: "home",
+            title: "Home",
+            icon: StateValue(
+              activeValue: Icons.home,
+              inactiveValue: Icons.home_outlined,
+            ),
+          ),
+          DrawerItem(
+            key: "profile",
+            title: "Profile",
+            icon: StateValue(
+              activeValue: Icons.person,
+              inactiveValue: Icons.person_outline,
+            ),
+          ),
+          DrawerItem(
+            key: "logout",
+            title: "Logout",
+            icon: StateValue(
+              activeValue: Icons.exit_to_app,
+              inactiveValue: Icons.exit_to_app_outlined,
+            ),
+          ),
+        ],
+        onPressed: (index, item) => onStateChanged?.call(index),
+      ),
     );
   }
 }
