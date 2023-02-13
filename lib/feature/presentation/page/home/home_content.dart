@@ -1,22 +1,22 @@
 import 'package:flutter_communication/feature/presentation/page/home/home_page.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
-import 'package:flutter_communication/feature/presentation/widget/drawer_navigator.dart';
+import 'package:flutter_communication/feature/presentation/widget/drawer_navigation.dart';
 
 class HomeContent {
   const HomeContent._();
 
   static const String title = HomePage.title;
 
-  static const List<DrawerItem> drawerTitles = [
-    DrawerItem(
+  static const List<DrawerNavigationItem> drawerTitles = [
+    DrawerNavigationItem(
       key: "home",
       title: title,
     ),
-    DrawerItem(
+    DrawerNavigationItem(
       key: "profile",
       title: ProfilePage.title,
     ),
-    DrawerItem(
+    DrawerNavigationItem(
       key: "logout",
       title: "Logout",
     )

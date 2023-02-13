@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_communication/core/utils/states/state_value.dart';
-import 'package:flutter_communication/feature/presentation/widget/drawer_navigator.dart';
+import 'package:flutter_communication/feature/presentation/widget/drawer_navigation.dart';
 
 import '../../../../core/constants/colors.dart';
-import '../../../../tile_button.dart';
 
 class HomeDrawer extends StatelessWidget {
   final int currentIndex;
@@ -17,8 +16,8 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DrawerNavigator(
-      header: DrawerNavigatorHeader(
+    return DrawerNavigation(
+      header: DrawerNavigationHeader(
         title: "Chatty",
         titleColor: Colors.white,
         titleStyle: FontWeight.bold,
@@ -29,8 +28,7 @@ class HomeDrawer extends StatelessWidget {
         ),
         background: Theme.of(context).primaryColor,
       ),
-      action: DrawerAction(
-        drawerCloseable: false,
+      action: DrawerNavigationAction(
         selectedIndex: currentIndex,
         borderRadius: 150,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -60,7 +58,7 @@ class HomeDrawer extends StatelessWidget {
           }
         },
         items: const [
-          DrawerItem(
+          DrawerNavigationItem(
             key: "home",
             title: "Home",
             icon: StateValue(
@@ -68,7 +66,7 @@ class HomeDrawer extends StatelessWidget {
               inactiveValue: Icons.home_outlined,
             ),
           ),
-          DrawerItem(
+          DrawerNavigationItem(
             key: "profile",
             title: "Profile",
             icon: StateValue(
@@ -76,7 +74,7 @@ class HomeDrawer extends StatelessWidget {
               inactiveValue: Icons.person_outline,
             ),
           ),
-          DrawerItem(
+          DrawerNavigationItem(
             key: "logout",
             title: "Logout",
             icon: StateValue(
