@@ -17,7 +17,7 @@ import 'feature/data/remote/data_sources/user_data_source.dart';
 import 'feature/data/remote/repository_impls/auth_repository_impl.dart';
 import 'feature/data/remote/repository_impls/user_repository_impl.dart';
 import 'feature/domain/repositories/auth_repository.dart';
-import 'feature/domain/repositories/user_repository.dart';
+import 'feature/domain/repositories/repository.dart';
 import 'feature/domain/use_cases/auth/is_sign_in_use_case.dart';
 import 'feature/domain/use_cases/auth/sign_in_with_biometric_use_case.dart';
 import 'feature/domain/use_cases/auth/sign_in_with_email_n_password_use_case.dart';
@@ -40,6 +40,7 @@ GetIt locator = GetIt.instance;
 Future<void> init() async {
   // Cubit
   locator.registerFactory<AuthCubit>(() => AuthCubit(
+        auth: locator(),
         isSignInUseCase: locator(),
         signUpWithCredentialUseCase: locator(),
         signUpWithEmailAndPasswordUseCase: locator(),
@@ -94,7 +95,7 @@ Future<void> init() async {
   // Repository
   locator.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(source: locator.call()));
-  locator.registerLazySingleton<UserRepository>(
+  locator.registerLazySingleton<Repository>(
       () => UserRepositoryImpl(remote: locator.call(), local: locator()));
 
   //Data Source
@@ -108,10 +109,10 @@ Future<void> init() async {
   locator.registerLazySingleton<FirebaseDataSource>(() => UserDataSource());
 
   locator.registerLazySingleton<PreferenceHelper>(
-          () => PreferenceHelper.of(preferences: locator()));
+      () => PreferenceHelper.of(preferences: locator()));
 
   locator.registerLazySingleton<UserHelper>(
-        () => UserHelper(helper: locator()),
+    () => UserHelper(helper: locator()),
   );
 
   //External

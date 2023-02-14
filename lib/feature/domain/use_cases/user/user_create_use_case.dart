@@ -1,9 +1,10 @@
 import '../../../../core/common/responses/response.dart';
 import '../../entities/user_entity.dart';
+import '../../repositories/repository.dart';
 import '../../repositories/user_repository.dart';
 
 class UserCreateUseCase {
-  final UserRepository repository;
+  final Repository repository;
 
   UserCreateUseCase({
     required this.repository,

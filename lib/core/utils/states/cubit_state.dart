@@ -6,9 +6,9 @@ class CubitState<T> {
   final List<T> result;
 
   CubitState({
-    required this.isFirstLoading,
-    required this.isLoading,
-    required this.exception,
+    this.isFirstLoading = false,
+    this.isLoading = false,
+    this.exception = "",
     this.data,
     this.result = const [],
   });

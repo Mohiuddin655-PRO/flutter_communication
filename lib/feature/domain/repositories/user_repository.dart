@@ -1,20 +1,5 @@
-import '../../../core/common/responses/response.dart';
+import 'package:flutter_communication/feature/domain/repositories/repository.dart';
+
 import '../entities/user_entity.dart';
 
-abstract class UserRepository {
-  Future<Response> create(UserEntity entity);
-
-  Future<Response> update(String uid, Map<String, dynamic> map);
-
-  Future<Response> delete(String uid);
-
-  Future<Response> get(String uid);
-
-  Future<Response> gets();
-
-  Future<Response> save(UserEntity entity);
-
-  Future<Response> remove();
-
-  Future<Response> backup();
-}
+abstract class UsderRepository extends Repository<UserEntity> {}

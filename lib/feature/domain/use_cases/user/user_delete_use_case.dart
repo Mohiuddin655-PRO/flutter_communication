@@ -1,8 +1,8 @@
 import '../../../../core/common/responses/response.dart';
-import '../../repositories/user_repository.dart';
+import '../../repositories/repository.dart';
 
 class UserDeleteUseCase {
-  final UserRepository repository;
+  final Repository repository;
 
   UserDeleteUseCase({
     required this.repository,

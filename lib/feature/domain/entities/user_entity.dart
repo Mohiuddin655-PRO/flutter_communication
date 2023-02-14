@@ -1,15 +1,14 @@
 import 'dart:developer';
 
-import 'package:equatable/equatable.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
-class UserEntity extends Equatable {
+class UserEntity extends Entity {
   final String? email;
   final String? name;
   final String? password;
   final String? phone;
   final String? photo;
-  final String? uid;
   final String? provider;
   final String? designation;
   final String? hallName;
@@ -17,18 +16,18 @@ class UserEntity extends Equatable {
   final String? workplace;
 
   const UserEntity({
+    super.uid,
     this.email,
     this.name,
     this.password,
     this.phone,
     this.photo,
-    this.uid,
     this.provider,
     this.designation,
     this.hallName,
     this.homeDistrict,
     this.workplace,
-  });
+  }) : super(id: uid ?? "");
 
   UserEntity copyWith({
     String? email,
@@ -123,7 +122,7 @@ class UserEntity extends Equatable {
 
   @override
   String toString() {
-    return "email : $email, name : $name, password : $password, phone : $phone, photo : $photo, uid : $uid, provider : $provider, designation : $designation, hallName : $hallName, homeDistrict : $homeDistrict, workplace : $workplace";
+    return "USER_ENTITY : [email : $email, name : $name, password : $password, phone : $phone, photo : $photo, uid : $uid, provider : $provider, designation : $designation, hallName : $hallName, homeDistrict : $homeDistrict, workplace : $workplace]";
   }
 
   @override

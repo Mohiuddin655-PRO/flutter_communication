@@ -1,19 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-class BaseEntity extends Equatable {
-  final String? noteId;
-  final String? note;
-  final Timestamp? time;
+class Entity extends Equatable {
+  final String id;
   final String? uid;
+  final int? time;
 
-  const BaseEntity({
-    this.noteId,
-    this.note,
-    this.time,
+  const Entity({
+    required this.id,
     this.uid,
+    this.time,
   });
 
   @override
-  List<Object?> get props => [noteId, note, time, uid];
+  List<Object?> get props => [id, uid, time];
 }

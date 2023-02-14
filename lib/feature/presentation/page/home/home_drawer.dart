@@ -6,11 +6,16 @@ import '../../../../core/constants/colors.dart';
 
 class HomeDrawer extends StatelessWidget {
   final int currentIndex;
+  final String? title, subtitle;
+  final String? photo;
   final Function(int index)? onStateChanged;
 
   const HomeDrawer({
     Key? key,
     this.currentIndex = 0,
+    this.title,
+    this.subtitle,
+    this.photo,
     this.onStateChanged,
   }) : super(key: key);
 
@@ -18,14 +23,27 @@ class HomeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return DrawerNavigation(
       header: DrawerNavigationHeader(
-        title: "Chatty",
+        title: title ?? "Chatty",
         titleColor: Colors.white,
         titleStyle: FontWeight.bold,
-        image: const Icon(
-          Icons.account_circle,
-          color: Colors.white,
-          size: 120,
-        ),
+        image: photo != null
+            ? Container(
+                width: 120,
+                height: 120,
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: Image.network(
+                  photo!,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : const Icon(
+                Icons.account_circle,
+                color: Colors.white,
+                size: 120,
+              ),
         background: Theme.of(context).primaryColor,
       ),
       action: DrawerNavigationAction(

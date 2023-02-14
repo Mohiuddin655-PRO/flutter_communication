@@ -25,7 +25,7 @@ class KeepUserDataSourceImpl extends LocalDataSource<UserEntity> {
   }
 
   @override
-  Future<Response> remove() async {
+  Future<Response> remove(String id) async {
     const response = Response();
     final completed = await preferences.remove(key);
     if (completed) {
@@ -36,7 +36,7 @@ class KeepUserDataSourceImpl extends LocalDataSource<UserEntity> {
   }
 
   @override
-  Future<Response> get() async {
+  Future<Response> get(String id) async {
     const response = Response<UserEntity>();
     final model = preferences.getString(key);
     if (model != null) {

@@ -1,16 +1,17 @@
 import '../../../../core/common/responses/response.dart';
+import '../../entities/user_entity.dart';
 import '../../repositories/repository.dart';
 
-class UserGetUseCase {
+class AddMessageUseCase {
   final Repository repository;
 
-  UserGetUseCase({
+  AddMessageUseCase({
     required this.repository,
   });
 
   Future<Response> call({
-    required String uid,
+    required UserEntity entity,
   }) async {
-    return repository.get(uid);
+    return repository.create(entity);
   }
 }

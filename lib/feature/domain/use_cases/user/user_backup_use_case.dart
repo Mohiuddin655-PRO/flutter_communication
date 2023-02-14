@@ -1,14 +1,14 @@
 import '../../../../core/common/responses/response.dart';
-import '../../repositories/user_repository.dart';
+import '../../repositories/repository.dart';
 
 class UserBackupUseCase {
-  final UserRepository repository;
+  final Repository repository;
 
   UserBackupUseCase({
     required this.repository,
   });
 
-  Future<Response> call() async {
-    return repository.backup();
+  Future<Response> call(String id) async {
+    return repository.getCache(id);
   }
 }

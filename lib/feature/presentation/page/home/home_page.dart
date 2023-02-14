@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_communication/dependency_injection.dart';
 import 'package:flutter_communication/feature/presentation/page/home/home_drawer.dart';
@@ -31,7 +30,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("User : $user");
     return Screen(
       title: index == 0 ? AppInfo.fullName : ProfilePage.title,
       titleAllCaps: true,
@@ -41,10 +39,14 @@ class _HomePageState extends State<HomePage> {
       body: index == 1 ? const ProfileBody() : const HomeBody(),
       drawer: HomeDrawer(
         currentIndex: index,
+        title: user?.name ?? "Mr. Thomas",
+        subtitle: user?.email,
+        photo: user?.photo ??
+            "https://images.unsplash.com/photo-1532318065232-2ba7c6676cd5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1223&q=80",
         onStateChanged: (index) async {
           if (index == 2) {
-            await FirebaseAuth.instance.signOut();
-            Navigator.pushReplacementNamed(context, AuthSignInPage.route);
+            await helper.removeUser();
+            resignIn();
           } else {
             setState(() => this.index = index);
           }
@@ -58,5 +60,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
+  }
+
+  void resignIn() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, AuthSignInPage.route, (route) => false);
   }
 }

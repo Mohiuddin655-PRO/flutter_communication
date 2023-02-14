@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/common/responses/response.dart';
@@ -18,6 +19,7 @@ import '../../domain/use_cases/user/user_remove_use_case.dart';
 import '../../domain/use_cases/user/user_save_use_case.dart';
 
 class AuthCubit extends Cubit<CubitState> {
+  final FirebaseAuth auth;
   final IsSignInUseCase isSignInUseCase;
   final SignUpWithCredentialUseCase signUpWithCredentialUseCase;
   final SignUpWithEmailAndPasswordUseCase signUpWithEmailAndPasswordUseCase;
@@ -32,6 +34,7 @@ class AuthCubit extends Cubit<CubitState> {
   final UserRemoveUseCase userRemoveUseCase;
 
   AuthCubit({
+    required this.auth,
     required this.isSignInUseCase,
     required this.signUpWithCredentialUseCase,
     required this.signUpWithEmailAndPasswordUseCase,
@@ -44,11 +47,7 @@ class AuthCubit extends Cubit<CubitState> {
     required this.userSaveUseCase,
     required this.userBackupUseCase,
     required this.userRemoveUseCase,
-  }) : super(CubitState(
-          isFirstLoading: false,
-          isLoading: false,
-          exception: '',
-        ));
+  }) : super(CubitState());
 
   Future<bool> get isLoggedIn async {
     try {
@@ -233,7 +232,8 @@ class AuthCubit extends Cubit<CubitState> {
     emit(state.copyWith(isLoading: true));
     final response = await signInWithBiometricUseCase.call();
     if (response.isSuccessful) {
-      final userResponse = await userBackupUseCase.call();
+      final id = auth.currentUser?.uid;
+      final userResponse = await userBackupUseCase.call(id ?? "uid");
       final user = userResponse.result;
       if (userResponse.isSuccessful && user is UserEntity) {
         final email = user.email ?? '';
@@ -260,9 +260,10 @@ class AuthCubit extends Cubit<CubitState> {
 
   Future<Response> signOut() async {
     emit(state.copyWith(isLoading: true));
+    final id = auth.currentUser?.uid;
     final response = await signOutUseCase.call();
     if (response.isSuccessful) {
-      final userResponse = await userRemoveUseCase.call();
+      final userResponse = await userRemoveUseCase.call(id ?? "uid");
       if (userResponse.isSuccessful || userResponse.snapshot != null) {
         emit(state.copyWith(data: null));
       } else {

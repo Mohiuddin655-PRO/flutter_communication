@@ -16,11 +16,7 @@ class UserCubit extends Cubit<CubitState> {
     required this.createUseCase,
     required this.updateUseCase,
     required this.deleteUseCase,
-  }) : super(CubitState(
-          isFirstLoading: false,
-          isLoading: false,
-          exception: '',
-        ));
+  }) : super(CubitState());
 
   Future<void> create({
     required UserEntity entity,

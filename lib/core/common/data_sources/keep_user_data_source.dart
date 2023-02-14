@@ -6,7 +6,7 @@ abstract class LocalDataSource<T> {
 
   Future<Response> insert(T entity);
 
-  Future<Response> remove();
+  Future<Response> remove(String id);
 
-  Future<Response> get();
+  Future<Response> get(String id);
 }

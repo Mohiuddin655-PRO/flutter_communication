@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_communication/core/utils/helpers/preference_helper.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,16 @@ class UserHelper {
     }
   }
 
+  Future<bool> removeUser() async {
+    await FirebaseAuth.instance.signOut();
+    try {
+      return helper.removeItem(key: userKey);
+    } catch (_) {
+      print("Error : $_");
+      return false;
+    }
+  }
+
   Future<bool> saveLoggedInStatus(bool isLoggedIn) async =>
       await helper.setBoolean(key: userLoggedInKey, value: isLoggedIn);
 
@@ -41,12 +52,15 @@ class UserHelper {
   UserEntity? get user {
     try {
       final source = helper.getString(key: userKey);
-      final data = jsonDecode(source ?? "{}");
-      print("Data : $data");
-      //TODO : Bug available
-      return data is UserEntity ? UserEntity.from(data) : null;
+      if (source != null) {
+        final data = jsonDecode(source);
+        print("Local User : $data");
+        return data is Map<String, dynamic> ? UserEntity.from(data) : null;
+      } else {
+        return null;
+      }
     } catch (_) {
-      print("Error : $_");
+      print("Local User : $_");
       return null;
     }
   }

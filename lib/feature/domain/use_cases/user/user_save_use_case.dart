@@ -1,9 +1,9 @@
 import '../../../../core/common/responses/response.dart';
 import '../../entities/user_entity.dart';
-import '../../repositories/user_repository.dart';
+import '../../repositories/repository.dart';
 
 class UserSaveUseCase {
-  final UserRepository repository;
+  final Repository repository;
 
   UserSaveUseCase({
     required this.repository,
@@ -12,6 +12,6 @@ class UserSaveUseCase {
   Future<Response> call({
     required UserEntity entity,
   }) async {
-    return repository.save(entity);
+    return repository.setCache(entity);
   }
 }
