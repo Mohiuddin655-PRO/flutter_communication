@@ -5,7 +5,7 @@ class HomeController extends UserCubit {
     required super.createUseCase,
     required super.updateUseCase,
     required super.deleteUseCase,
+    required super.userGetUseCase,
+    required super.userGetsUseCase,
   });
 }
-
-

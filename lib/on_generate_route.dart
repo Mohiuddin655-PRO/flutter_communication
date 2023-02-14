@@ -16,12 +16,13 @@ import 'feature/presentation/page/home/home_page.dart';
 
 class OnGenerateRoute {
   static Route<dynamic> route(RouteSettings settings) {
+    final data = settings.arguments;
     switch (settings.name) {
       //Default
       case SplashPage.route:
         return routeBuilder(widget: _splash());
       case HomePage.route:
-        return routeBuilder(widget: _home());
+        return routeBuilder(widget: _home(data));
       case AuthSignInPage.route:
         return routeBuilder(widget: _signIn());
       case AuthSignUpPage.route:
@@ -61,17 +62,18 @@ Widget _splash() {
 }
 
 // Default
-Widget _home() {
+Widget _home(dynamic data) {
+  final uid = data is String ? data : "";
   return MultiBlocProvider(
     providers: [
       BlocProvider(
         create: (context) => locator<AuthCubit>(),
       ),
       BlocProvider(
-        create: (context) => locator<UserCubit>(),
+        create: (context) => locator<UserCubit>()..get(uid: uid),
       ),
     ],
-    child: HomePage(),
+    child: const HomePage(),
   );
 }
 

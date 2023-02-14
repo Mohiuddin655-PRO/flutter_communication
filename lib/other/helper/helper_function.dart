@@ -12,10 +12,7 @@ class UserHelper {
     required this.helper,
   });
 
-  static String userKey = "user";
-  static String userLoggedInKey = "logged_in";
-  static String userNameKey = "user_name";
-  static String userEmailKey = "user_email";
+  static String userKey = "uid";
 
   Future<bool> saveUser(UserEntity user) async {
     try {
@@ -38,15 +35,6 @@ class UserHelper {
     }
   }
 
-  Future<bool> saveLoggedInStatus(bool isLoggedIn) async =>
-      await helper.setBoolean(key: userLoggedInKey, value: isLoggedIn);
-
-  Future<bool> saveUserName(String userName) async =>
-      await helper.setString(key: userNameKey, value: userName);
-
-  Future<bool> saveUserEmail(String userEmail) async =>
-      await helper.setString(key: userEmailKey, value: userEmail);
-
   bool get isLoggedIn => user != null;
 
   UserEntity? get user {
@@ -64,10 +52,6 @@ class UserHelper {
       return null;
     }
   }
-
-  String? get userEmail => helper.getString(key: userEmailKey);
-
-  String? get userName => helper.getString(key: userNameKey);
 }
 
 class HelperFunctions {

@@ -11,7 +11,6 @@ class UserEntity extends Entity {
   final String? photo;
   final String? provider;
   final String? designation;
-  final String? hallName;
   final String? homeDistrict;
   final String? workplace;
 
@@ -24,7 +23,6 @@ class UserEntity extends Entity {
     this.photo,
     this.provider,
     this.designation,
-    this.hallName,
     this.homeDistrict,
     this.workplace,
   }) : super(id: uid ?? "");
@@ -38,7 +36,6 @@ class UserEntity extends Entity {
     String? uid,
     String? provider,
     String? designation,
-    String? hallName,
     String? homeDistrict,
     String? workplace,
   }) {
@@ -51,7 +48,6 @@ class UserEntity extends Entity {
       uid: uid ?? this.uid,
       provider: provider ?? this.provider,
       designation: designation ?? this.designation,
-      hallName: hallName ?? this.hallName,
       homeDistrict: homeDistrict ?? this.homeDistrict,
       workplace: workplace ?? this.workplace,
     );
@@ -59,7 +55,7 @@ class UserEntity extends Entity {
 
   factory UserEntity.from(dynamic data) {
     dynamic email, name, password, phone, photo, uid, provider;
-    dynamic designation, hallName, homeDistrict, workplace;
+    dynamic designation, homeDistrict, workplace;
     try {
       if (data is DataSnapshot) {
         email = data.child('email');
@@ -70,7 +66,6 @@ class UserEntity extends Entity {
         uid = data.child('uid');
         provider = data.child('provider');
         designation = data.child('designation');
-        hallName = data.child('hall_name');
         homeDistrict = data.child('home_district');
         workplace = data.child('workplace');
       } else {
@@ -82,26 +77,25 @@ class UserEntity extends Entity {
         uid = data['uid'];
         provider = data['provider'];
         designation = data['designation'];
-        hallName = data['hall_name'];
         homeDistrict = data['home_district'];
         workplace = data['workplace'];
       }
+      return UserEntity(
+        email: email,
+        name: name,
+        password: password,
+        phone: phone,
+        photo: photo,
+        uid: uid,
+        provider: provider,
+        designation: designation,
+        homeDistrict: homeDistrict,
+        workplace: workplace,
+      );
     } catch (e) {
       log(e.toString());
+      return const UserEntity();
     }
-    return UserEntity(
-      email: email,
-      name: name,
-      password: password,
-      phone: phone,
-      photo: photo,
-      uid: uid,
-      provider: provider,
-      designation: designation,
-      hallName: hallName,
-      homeDistrict: homeDistrict,
-      workplace: workplace,
-    );
   }
 
   Map<String, dynamic> get map {
@@ -114,7 +108,6 @@ class UserEntity extends Entity {
       "uid": uid,
       "provider": provider,
       "designation": designation,
-      "hall_name": hallName,
       "home_district": homeDistrict,
       "workplace": workplace,
     };
@@ -122,7 +115,7 @@ class UserEntity extends Entity {
 
   @override
   String toString() {
-    return "USER_ENTITY : [email : $email, name : $name, password : $password, phone : $phone, photo : $photo, uid : $uid, provider : $provider, designation : $designation, hallName : $hallName, homeDistrict : $homeDistrict, workplace : $workplace]";
+    return "USER_ENTITY : [email : $email, name : $name, password : $password, phone : $phone, photo : $photo, uid : $uid, provider : $provider, designation : $designation, homeDistrict : $homeDistrict, workplace : $workplace]";
   }
 
   @override
@@ -135,7 +128,6 @@ class UserEntity extends Entity {
         uid,
         provider,
         designation,
-        hallName,
         homeDistrict,
         workplace,
       ];

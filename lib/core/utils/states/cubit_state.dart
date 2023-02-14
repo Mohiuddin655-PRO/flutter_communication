@@ -25,7 +25,7 @@ class CubitState<T> {
       isLoading:
           isLoading ?? (result != null ? exception != null : this.isLoading),
       exception: exception ?? this.exception,
-      data: data,
+      data: data ?? this.data,
       result: result ?? this.result,
     );
   }

@@ -1,8 +1,10 @@
+import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
+
 import '../../../../core/common/responses/response.dart';
-import '../../repositories/repository.dart';
+import '../../repositories/database_repository.dart';
 
 class UserGetsUseCase {
-  final Repository repository;
+  final DatabaseRepository<UserEntity> repository;
 
   UserGetsUseCase({
     required this.repository,

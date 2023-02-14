@@ -6,6 +6,7 @@ class Response<T> {
   final T? result;
   final dynamic snapshot;
   final Status status;
+  final String tag;
 
   const Response({
     this.result,
@@ -15,6 +16,7 @@ class Response<T> {
     this.isFailed = false,
     this.snapshot,
     this.status = Status.noContent,
+    this.tag = "",
   });
 
   Response<T> copyWith({
@@ -25,6 +27,7 @@ class Response<T> {
     String? message,
     dynamic snapshot,
     Status? status,
+    String? tag,
   }) {
     return Response(
       isCancel: isCancel ?? this.isCancel,
@@ -32,6 +35,7 @@ class Response<T> {
       isFailed: isFailed ?? this.isFailed,
       result: result ?? this.result,
       snapshot: snapshot ?? this.snapshot,
+      tag: tag ?? this.tag,
       message:
           message ?? (isSuccessful ?? false ? "Successful!" : this.message),
       status: status ??

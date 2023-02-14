@@ -1,55 +1,56 @@
-import '../../../../core/common/data_sources/firebase_data_source.dart';
-import '../../../../core/common/data_sources/keep_user_data_source.dart';
+import 'package:flutter_communication/core/common/data_sources/firebase_data_source.dart';
+
+import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
 import '../../../domain/entities/user_entity.dart';
-import '../../../domain/repositories/repository.dart';
+import '../../../domain/repositories/database_repository.dart';
 
-class UserRepositoryImpl extends Repository<UserEntity> {
-  final LocalDataSource local;
-  final FirebaseDataSource remote;
+class UserRepository extends DatabaseRepository<UserEntity> {
+  final KeepUserDataSource localDataSource;
+  final FirebaseDataSource remoteDataSource;
 
-  UserRepositoryImpl({
-    required this.local,
-    required this.remote,
+  UserRepository({
+    required this.localDataSource,
+    required this.remoteDataSource,
   });
 
   @override
   Future<Response> create(UserEntity entity) {
-    return remote.insert(entity.uid ?? '', entity.map);
+    return remoteDataSource.insert(entity.uid ?? '', entity.map);
   }
 
   @override
   Future<Response> update(String id, Map<String, dynamic> map) {
-    return remote.update(id, map);
+    return remoteDataSource.update(id, map);
   }
 
   @override
   Future<Response> delete(String id) {
-    return remote.delete(id);
+    return remoteDataSource.delete(id);
   }
 
   @override
   Future<Response> get(String id) {
-    return remote.get(id);
+    return remoteDataSource.get(id);
   }
 
   @override
   Future<Response> gets() {
-    return remote.gets();
+    return remoteDataSource.gets();
   }
 
   @override
   Future<Response> setCache(UserEntity entity) {
-    return local.insert(entity);
+    return localDataSource.insert(entity);
   }
 
   @override
   Future<Response> removeCache(String id) {
-    return local.remove(id);
+    return localDataSource.remove(id);
   }
 
   @override
   Future<Response> getCache(String id) {
-    return local.get(id);
+    return localDataSource.get(id);
   }
 }

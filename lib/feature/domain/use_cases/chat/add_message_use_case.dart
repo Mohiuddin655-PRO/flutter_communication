@@ -1,9 +1,9 @@
 import '../../../../core/common/responses/response.dart';
 import '../../entities/user_entity.dart';
-import '../../repositories/repository.dart';
+import '../../repositories/database_repository.dart';
 
 class AddMessageUseCase {
-  final Repository repository;
+  final DatabaseRepository repository;
 
   AddMessageUseCase({
     required this.repository,

@@ -1,12 +1,12 @@
 import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
-import 'package:flutter_communication/feature/domain/repositories/repository.dart';
+import 'package:flutter_communication/feature/domain/repositories/database_repository.dart';
 
 import '../../../../core/common/data_sources/firebase_data_source.dart';
-import '../../../../core/common/data_sources/keep_user_data_source.dart';
+import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
 
-class MessageRepositoryImpl extends Repository<MessageEntity> {
-  final LocalDataSource local;
+class MessageRepositoryImpl extends DatabaseRepository<MessageEntity> {
+  final KeepUserDataSource local;
   final FirebaseDataSource remote;
 
   MessageRepositoryImpl({

@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../feature/domain/entities/user_entity.dart';
-import '../data_sources/keep_user_data_source.dart';
+import '../data_sources/local_user_data_source.dart';
 import '../responses/response.dart';
 
-class KeepUserDataSourceImpl extends LocalDataSource<UserEntity> {
+class LocalUserDataSourceImpl extends KeepUserDataSource<UserEntity> {
   final SharedPreferences preferences;
-  final key = 'uid';
+  static const key = 'uid';
 
-  KeepUserDataSourceImpl({required this.preferences});
+  LocalUserDataSourceImpl({required this.preferences});
 
   @override
   Future<Response> insert(UserEntity? entity) async {
@@ -25,7 +25,7 @@ class KeepUserDataSourceImpl extends LocalDataSource<UserEntity> {
   }
 
   @override
-  Future<Response> remove(String id) async {
+  Future<Response> remove(String? id) async {
     const response = Response();
     final completed = await preferences.remove(key);
     if (completed) {
@@ -36,7 +36,7 @@ class KeepUserDataSourceImpl extends LocalDataSource<UserEntity> {
   }
 
   @override
-  Future<Response> get(String id) async {
+  Future<Response> get(String? id) async {
     const response = Response<UserEntity>();
     final model = preferences.getString(key);
     if (model != null) {

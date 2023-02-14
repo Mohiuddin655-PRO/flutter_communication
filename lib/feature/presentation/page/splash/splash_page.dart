@@ -23,7 +23,11 @@ class SplashPage extends StatelessWidget {
       logo: "assets/png/logo.png",
       onRoute: (context) {
         return local.isLoggedIn
-            ? Navigator.pushReplacementNamed(context, HomePage.route)
+            ? Navigator.pushReplacementNamed(
+                context,
+                HomePage.route,
+                arguments: local.user?.uid,
+              )
             : Navigator.pushReplacementNamed(context, AuthSignInPage.route);
       },
     );

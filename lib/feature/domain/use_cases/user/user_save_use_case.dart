@@ -1,9 +1,9 @@
 import '../../../../core/common/responses/response.dart';
 import '../../entities/user_entity.dart';
-import '../../repositories/repository.dart';
+import '../../repositories/database_repository.dart';
 
 class UserSaveUseCase {
-  final Repository repository;
+  final DatabaseRepository<UserEntity> repository;
 
   UserSaveUseCase({
     required this.repository,

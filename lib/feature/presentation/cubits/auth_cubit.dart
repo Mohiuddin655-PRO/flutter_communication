@@ -98,7 +98,7 @@ class AuthCubit extends Cubit<CubitState> {
           } else {
             emit(state.copyWith(exception: userResponse.message));
           }
-          return userResponse.copyWith(result: response.result);
+          return userResponse.copyWith(result: user);
         } else {
           emit(state.copyWith(exception: response.message));
           return response;
@@ -144,7 +144,7 @@ class AuthCubit extends Cubit<CubitState> {
           } else {
             emit(state.copyWith(exception: userResponse.message));
           }
-          return userResponse.copyWith(result: response.result);
+          return userResponse.copyWith(result: user);
         } else {
           emit(state.copyWith(exception: response.message));
           return response;
@@ -181,7 +181,7 @@ class AuthCubit extends Cubit<CubitState> {
         } else {
           emit(state.copyWith(exception: userResponse.message));
         }
-        return userResponse.copyWith(result: finalResponse.result);
+        return userResponse.copyWith(result: user);
       } else {
         emit(state.copyWith(exception: finalResponse.message));
         return finalResponse;
@@ -217,7 +217,7 @@ class AuthCubit extends Cubit<CubitState> {
         } else {
           emit(state.copyWith(exception: userResponse.message));
         }
-        return userResponse.copyWith(result: finalResponse.result);
+        return userResponse.copyWith(result: user);
       } else {
         emit(state.copyWith(exception: finalResponse.message));
         return finalResponse;

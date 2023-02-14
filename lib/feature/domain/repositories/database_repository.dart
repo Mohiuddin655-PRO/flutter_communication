@@ -2,7 +2,7 @@ import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../core/common/responses/response.dart';
 
-abstract class Repository<T extends Entity> {
+abstract class DatabaseRepository<T extends Entity> {
   Future<Response> create(T entity);
 
   Future<Response> update(String id, Map<String, dynamic> map);

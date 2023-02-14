@@ -6,29 +6,29 @@ import '../../../domain/entities/credential.dart';
 import '../../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
-  final AuthDataSource source;
+  final AuthDataSource authDataSource;
 
   AuthRepositoryImpl({
-    required this.source,
+    required this.authDataSource,
   });
 
   @override
-  Future<bool> isSignIn() => source.isSignIn();
+  Future<bool> isSignIn() => authDataSource.isSignIn();
 
   @override
-  Future<Response> signOut() => source.signOut();
+  Future<Response> signOut() => authDataSource.signOut();
 
   @override
-  String? get uid => source.uid;
+  String? get uid => authDataSource.uid;
 
   @override
-  User? get user => source.user;
+  User? get user => authDataSource.user;
 
   @override
   Future<Response<UserCredential>> signUpWithCredential({
     required AuthCredential credential,
   }) {
-    return source.signUpWithCredential(credential: credential);
+    return authDataSource.signUpWithCredential(credential: credential);
   }
 
   @override
@@ -36,7 +36,7 @@ class AuthRepositoryImpl extends AuthRepository {
     required String email,
     required String password,
   }) {
-    return source.signUpWithEmailNPassword(email: email, password: password);
+    return authDataSource.signUpWithEmailNPassword(email: email, password: password);
   }
 
   @override
@@ -44,21 +44,21 @@ class AuthRepositoryImpl extends AuthRepository {
     required String email,
     required String password,
   }) {
-    return source.signInWithEmailNPassword(email: email, password: password);
+    return authDataSource.signInWithEmailNPassword(email: email, password: password);
   }
 
   @override
   Future<Response<Credential>> signInWithFacebook() {
-    return source.signInWithFacebook();
+    return authDataSource.signInWithFacebook();
   }
 
   @override
   Future<Response<Credential>> signInWithGoogle() {
-    return source.signInWithGoogle();
+    return authDataSource.signInWithGoogle();
   }
 
   @override
   Future<Response<bool>> signInWithBiometric() {
-    return source.signInWithBiometric();
+    return authDataSource.signInWithBiometric();
   }
 }
