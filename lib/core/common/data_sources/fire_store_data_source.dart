@@ -3,13 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
-import '../data_sources/firebase_data_source.dart';
+import 'firebase_data_source.dart';
 
-abstract class FireStoreDataSourceImpl<T extends Entity>
+abstract class FireStoreDataSource<T extends Entity>
     extends FirebaseDataSource<T> {
   final String path;
 
-  FireStoreDataSourceImpl({required this.path});
+  FireStoreDataSource({required this.path});
 
   FirebaseFirestore? _db;
 

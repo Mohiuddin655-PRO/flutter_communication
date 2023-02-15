@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_communication/feature/data/remote/data_sources/user_data_source.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-import 'package:flutter_communication/other/helper/helper_function.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:local_auth/local_auth.dart';
@@ -38,10 +37,6 @@ Future<void> init() async {
 void _helpers() {
   locator.registerLazySingleton<PreferenceHelper>(() {
     return PreferenceHelper.of(preferences: locator());
-  });
-
-  locator.registerLazySingleton<UserHelper>(() {
-    return UserHelper(helper: locator());
   });
 }
 
@@ -128,7 +123,6 @@ void _useCases() {
 
 void _cubits() {
   locator.registerFactory<AuthCubit>(() => AuthCubit(
-        auth: locator(),
         isSignInUseCase: locator(),
         signUpWithCredentialUseCase: locator(),
         signUpWithEmailAndPasswordUseCase: locator(),
@@ -143,10 +137,14 @@ void _cubits() {
         userRemoveUseCase: locator(),
       ));
   locator.registerFactory<UserCubit>(() => UserCubit(
-        createUseCase: locator(),
-        updateUseCase: locator(),
+        userBackupUseCase: locator(),
+        userCreateUseCase: locator(),
+        userDeleteUseCase: locator(),
         userGetUseCase: locator(),
+        userGetUpdatesUseCase: locator(),
         userGetsUseCase: locator(),
-        deleteUseCase: locator(),
+        userRemoveUseCase: locator(),
+        userSaveUseCase: locator(),
+        userUpdateUseCase: locator(),
       ));
 }

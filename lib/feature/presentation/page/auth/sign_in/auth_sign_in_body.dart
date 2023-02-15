@@ -4,12 +4,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_communication/dependency_injection.dart';
-import 'package:flutter_communication/other/helper/helper_function.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../../core/common/responses/response.dart';
 import '../../../../../core/common/widgets/toast.dart';
 import '../../../../../core/constants/colors.dart';
+import '../../../../../core/utils/helpers/auth_helper.dart';
 import '../../../../../core/utils/validators/validator.dart';
 import '../../../../domain/entities/user_entity.dart';
 import '../../../cubits/auth_cubit.dart';
@@ -33,7 +33,7 @@ class _AuthSignInBodyState extends State<AuthSignInBody> {
   late String email, password;
   late bool isValidEmail, isValidPassword;
   late AuthCubit cubit = context.read<AuthCubit>();
-  late UserHelper userHelper = locator<UserHelper>();
+  late AuthHelper userHelper = locator<AuthHelper>();
 
   @override
   Widget build(BuildContext context) {
@@ -195,17 +195,19 @@ class _AuthSignInBodyState extends State<AuthSignInBody> {
       final data =
           response.getSnapshot<DataSnapshot>()?.value ?? response.result;
       final user = UserEntity.from(data);
-      saveData(user);
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomePage.route,
-        (route) => false,
-        arguments: user,
-      );
+      await cubit.saveData(user);
+      _route(user);
     } else {
       Toast.message(response.message);
     }
   }
 
-  void saveData(UserEntity entity) async => await userHelper.saveUser(entity);
+  void _route(UserEntity user) {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      HomePage.route,
+      (route) => false,
+      arguments: user,
+    );
+  }
 }

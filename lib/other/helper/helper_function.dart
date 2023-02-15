@@ -1,58 +1,5 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_communication/core/utils/helpers/preference_helper.dart';
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class UserHelper {
-  final PreferenceHelper helper;
-
-  UserHelper({
-    required this.helper,
-  });
-
-  static String userKey = "uid";
-
-  Future<bool> saveUser(UserEntity user) async {
-    try {
-      final json = jsonEncode(user.source);
-      print("Data : $json");
-      return helper.setString(key: userKey, value: json);
-    } catch (_) {
-      print("Error : $_");
-      return false;
-    }
-  }
-
-  Future<bool> removeUser() async {
-    await FirebaseAuth.instance.signOut();
-    try {
-      return helper.removeItem(key: userKey);
-    } catch (_) {
-      print("Error : $_");
-      return false;
-    }
-  }
-
-  bool get isLoggedIn => user != null;
-
-  UserEntity? get user {
-    try {
-      final source = helper.getString(key: userKey);
-      if (source != null) {
-        final data = jsonDecode(source);
-        print("Local User : $data");
-        return data is Map<String, dynamic> ? UserEntity.from(data) : null;
-      } else {
-        return null;
-      }
-    } catch (_) {
-      print("Local User : $_");
-      return null;
-    }
-  }
-}
 
 class HelperFunctions {
   //keys

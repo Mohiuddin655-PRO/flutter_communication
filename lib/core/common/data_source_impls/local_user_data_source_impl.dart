@@ -16,7 +16,7 @@ class LocalUserDataSourceImpl extends KeepUserDataSource<UserEntity> {
   Future<Response> insert(UserEntity? entity) async {
     const response = Response();
     final json = jsonEncode(entity?.source ?? '');
-    final success = await preferences.setString(key, json);
+    final success = await preferences.setString(entity?.uid ?? key, json);
     if (success) {
       return response.copyWith(isSuccessful: success);
     } else {
@@ -27,7 +27,7 @@ class LocalUserDataSourceImpl extends KeepUserDataSource<UserEntity> {
   @override
   Future<Response> remove(String? id) async {
     const response = Response();
-    final completed = await preferences.remove(key);
+    final completed = await preferences.remove(id ?? key);
     if (completed) {
       return response.copyWith(result: true);
     } else {
@@ -38,7 +38,7 @@ class LocalUserDataSourceImpl extends KeepUserDataSource<UserEntity> {
   @override
   Future<Response> get(String? id) async {
     const response = Response<UserEntity>();
-    final model = preferences.getString(key);
+    final model = preferences.getString(id ?? key);
     if (model != null) {
       final json = jsonDecode(model);
       final data = UserEntity.from(json);

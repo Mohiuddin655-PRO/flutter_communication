@@ -19,7 +19,6 @@ import '../../domain/use_cases/user/user_remove_use_case.dart';
 import '../../domain/use_cases/user/user_save_use_case.dart';
 
 class AuthCubit extends Cubit<CubitState> {
-  final FirebaseAuth auth;
   final IsSignInUseCase isSignInUseCase;
   final SignUpWithCredentialUseCase signUpWithCredentialUseCase;
   final SignUpWithEmailAndPasswordUseCase signUpWithEmailAndPasswordUseCase;
@@ -34,7 +33,6 @@ class AuthCubit extends Cubit<CubitState> {
   final UserRemoveUseCase userRemoveUseCase;
 
   AuthCubit({
-    required this.auth,
     required this.isSignInUseCase,
     required this.signUpWithCredentialUseCase,
     required this.signUpWithEmailAndPasswordUseCase,
@@ -48,6 +46,10 @@ class AuthCubit extends Cubit<CubitState> {
     required this.userBackupUseCase,
     required this.userRemoveUseCase,
   }) : super(CubitState());
+
+  static String get uid => user?.uid ?? "uid";
+
+  static User? get user => FirebaseAuth.instance.currentUser;
 
   Future<bool> get isLoggedIn async {
     try {
@@ -232,8 +234,7 @@ class AuthCubit extends Cubit<CubitState> {
     emit(state.copyWith(isLoading: true));
     final response = await signInWithBiometricUseCase.call();
     if (response.isSuccessful) {
-      final id = auth.currentUser?.uid;
-      final userResponse = await userBackupUseCase.call(id ?? "uid");
+      final userResponse = await userBackupUseCase.call(uid);
       final user = userResponse.result;
       if (userResponse.isSuccessful && user is UserEntity) {
         final email = user.email ?? '';
@@ -260,10 +261,9 @@ class AuthCubit extends Cubit<CubitState> {
 
   Future<Response> signOut() async {
     emit(state.copyWith(isLoading: true));
-    final id = auth.currentUser?.uid;
     final response = await signOutUseCase.call();
     if (response.isSuccessful) {
-      final userResponse = await userRemoveUseCase.call(id ?? "uid");
+      final userResponse = await userRemoveUseCase.call(uid);
       if (userResponse.isSuccessful || userResponse.snapshot != null) {
         emit(state.copyWith(data: null));
       } else {
@@ -275,4 +275,13 @@ class AuthCubit extends Cubit<CubitState> {
       return response;
     }
   }
+
+  Future<Response> backup(UserEntity entity) async =>
+      await userBackupUseCase.call(uid);
+
+  Future<Response> saveData(UserEntity entity) async =>
+      await userSaveUseCase.call(entity: entity);
+
+  Future<Response> remove(UserEntity entity) async =>
+      await userRemoveUseCase.call(uid);
 }

@@ -3,13 +3,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
-import '../data_sources/firebase_data_source.dart';
+import 'firebase_data_source.dart';
 
-abstract class RealtimeDataSourceImpl<T extends Entity>
+abstract class RealtimeDataSource<T extends Entity>
     extends FirebaseDataSource<T> {
   final String path;
 
-  RealtimeDataSourceImpl({required this.path});
+  RealtimeDataSource({required this.path});
 
   FirebaseDatabase? _db;
 
