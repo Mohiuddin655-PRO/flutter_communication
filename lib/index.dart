@@ -5,7 +5,7 @@ export 'core/common/data_sources/auth_data_source.dart';
 export 'core/common/data_sources/local_user_data_source.dart';
 export 'core/utils/helpers/preference_helper.dart';
 export 'feature/data/remote/repository_impls/auth_repository_impl.dart';
-export 'feature/data/remote/repository_impls/user_repository_impl.dart';
+export 'feature/data/remote/repository_impls/user_repository.dart';
 export 'feature/domain/repositories/auth_repository.dart';
 export 'feature/domain/use_cases/auth/is_sign_in_use_case.dart';
 export 'feature/domain/use_cases/auth/sign_in_with_biometric_use_case.dart';

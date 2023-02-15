@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_communication/core/constants/colors.dart';
 import 'package:flutter_communication/core/utils/states/cubit_state.dart';
 import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
 import 'package:flutter_communication/feature/presentation/page/home/home_drawer.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
           titleAllCaps: true,
           titleCenter: true,
           titleStyle: FontWeight.bold,
-          background: Colors.white,
+          background: KColors.primary.withOpacity(0.5),
           body: index == 1 ? const ProfileBody() : const HomeBody(),
           drawer: HomeDrawer(
             currentIndex: index,

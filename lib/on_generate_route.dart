@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_communication/feature/presentation/cubits/message_cubit.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
 import 'package:flutter_communication/feature/presentation/page/search/search_page.dart';
@@ -75,6 +76,9 @@ Widget _home(dynamic data) {
           ..get(uid: uid)
           ..gets()
           ..getUpdates(),
+      ),
+      BlocProvider(
+        create: (context) => locator<MessageCubit>(),
       ),
     ],
     child: const HomePage(),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
 import 'package:flutter_communication/other/pages/group_info.dart';
 import 'package:flutter_communication/other/service/database_service.dart';
 import 'package:flutter_communication/other/widgets/message_tile.dart';
@@ -127,10 +128,11 @@ class _ChatPageState extends State<ChatPage> {
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
-                      message: snapshot.data.docs[index]['message'],
-                      sender: snapshot.data.docs[index]['sender'],
-                      sentByMe: widget.userName ==
-                          snapshot.data.docs[index]['sender']);
+                    item: MessageEntity.from(snapshot.data.docs),
+                      // message: snapshot.data.docs[index]['message'],
+                      // sender: snapshot.data.docs[index]['sender'],
+                      // sentByMe: widget.userName == snapshot.data.docs[index]['sender'],
+                  );
                 },
               )
             : Container();

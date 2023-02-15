@@ -58,4 +58,9 @@ class UserRepository extends DatabaseRepository<UserEntity> {
   Future<Response> getCache(String id) {
     return localDataSource.get(id);
   }
+
+  @override
+  Stream<Response> lives() {
+    return remoteDataSource.lives();
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
@@ -109,4 +111,37 @@ abstract class FireStoreDataSource<T extends Entity>
 
   @override
   Future<Response<List<T>>> getUpdates() => gets(onlyUpdatedData: true);
+
+  @override
+  Stream<Response<List<T>>> lives({
+    bool onlyUpdatedData = false,
+  }) {
+    final controller = StreamController<Response<List<T>>>();
+    final response = Response<List<T>>();
+    try {
+      database.collection(path).snapshots().listen((result) {
+        log.put("GETS", result);
+        if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
+          if (onlyUpdatedData) {
+            List<T> list = result.docChanges.map((e) {
+              return build(e.doc.data());
+            }).toList();
+            controller.add(response.copyWith(result: list));
+          } else {
+            List<T> list = result.docs.map((e) {
+              return build(e.data());
+            }).toList();
+            controller.add(response.copyWith(result: list));
+          }
+        } else {
+          controller.addError("Data not found!");
+        }
+      });
+    } on Exception catch (_) {
+      log.put("GETS", _.toString());
+      controller.addError(_);
+    }
+
+    return controller.stream;
+  }
 }

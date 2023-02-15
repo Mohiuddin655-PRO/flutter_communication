@@ -3,16 +3,14 @@ import 'package:flutter_communication/feature/domain/entities/message_entity.dar
 import '../../../../core/common/responses/response.dart';
 import '../../repositories/database_repository.dart';
 
-class AddMessageUseCase {
+class GetsMessageUseCase {
   final DatabaseRepository<MessageEntity> repository;
 
-  AddMessageUseCase({
+  GetsMessageUseCase({
     required this.repository,
   });
 
-  Future<Response> call({
-    required MessageEntity entity,
-  }) async {
-    return repository.create(entity);
+  Future<Response> call() async {
+    return repository.gets();
   }
 }

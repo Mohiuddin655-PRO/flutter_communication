@@ -5,11 +5,11 @@ import '../../../../core/common/data_sources/firebase_data_source.dart';
 import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
 
-class MessageRepositoryImpl extends DatabaseRepository<MessageEntity> {
+class MessageRepository extends DatabaseRepository<MessageEntity> {
   final KeepUserDataSource local;
   final FirebaseDataSource remote;
 
-  MessageRepositoryImpl({
+  MessageRepository({
     required this.local,
     required this.remote,
   });
@@ -37,6 +37,11 @@ class MessageRepositoryImpl extends DatabaseRepository<MessageEntity> {
   @override
   Future<Response> getUpdates() {
     return remote.getUpdates();
+  }
+
+  @override
+  Stream<Response> lives() {
+    return remote.lives();
   }
 
   @override

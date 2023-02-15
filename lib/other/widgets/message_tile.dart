@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_communication/core/constants/colors.dart';
+import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
 
 class MessageTile extends StatefulWidget {
-  final String message;
-  final String sender;
-  final bool sentByMe;
+  final MessageEntity item;
 
-  const MessageTile(
-      {Key? key,
-      required this.message,
-      required this.sender,
-      required this.sentByMe})
-      : super(key: key);
+  const MessageTile({
+    Key? key,
+    required this.item,
+  }) : super(key: key);
 
   @override
   State<MessageTile> createState() => _MessageTileState();
@@ -19,54 +17,85 @@ class MessageTile extends StatefulWidget {
 class _MessageTileState extends State<MessageTile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: 4,
-          bottom: 4,
-          left: widget.sentByMe ? 0 : 24,
-          right: widget.sentByMe ? 24 : 0),
-      alignment: widget.sentByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: widget.sentByMe
-            ? const EdgeInsets.only(left: 30)
-            : const EdgeInsets.only(right: 30),
-        padding:
-            const EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
-        decoration: BoxDecoration(
-            borderRadius: widget.sentByMe
+    final item = widget.item;
+    const borderRadius = Radius.circular(20);
+    return Row(
+      mainAxisAlignment:
+          item.isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (!item.isCurrentUser)
+          _UserAvatar(
+            isMe: item.isCurrentUser,
+            item: item.receiver,
+          ),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          decoration: BoxDecoration(
+            color: item.isCurrentUser
+                ? KColors.primary.shade200
+                : KColors.primary.shade50,
+            borderRadius: item.isCurrentUser
                 ? const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(20),
+                    topLeft: borderRadius,
+                    topRight: borderRadius,
+                    bottomLeft: borderRadius,
                   )
                 : const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
+                    topLeft: borderRadius,
+                    topRight: borderRadius,
+                    bottomRight: borderRadius,
                   ),
-            color: widget.sentByMe
-                ? Theme.of(context).primaryColor
-                : Colors.grey[700]),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.sender.toUpperCase(),
-              textAlign: TextAlign.start,
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: -0.5),
+          ),
+          child: Text(
+            item.message ?? "",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 16,
+              color: item.isCurrentUser ? Colors.white : Colors.black,
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            Text(widget.message,
-                textAlign: TextAlign.start,
-                style: const TextStyle(fontSize: 16, color: Colors.white))
-          ],
+          ),
         ),
+        if (item.isCurrentUser)
+          _UserAvatar(
+            isMe: item.isCurrentUser,
+            item: item.sender,
+          ),
+      ],
+    );
+  }
+}
+
+class _UserAvatar extends StatelessWidget {
+  final bool isMe;
+  final MessagingUser item;
+
+  const _UserAvatar({
+    Key? key,
+    required this.isMe,
+    required this.item,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 16,
+      height: 16,
+      clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.only(
+        left: isMe ? 4 : 0,
+        right: isMe ? 0 : 4,
+      ),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white.withOpacity(0.25),
+      ),
+      child: Image.network(
+        item.photo ?? "",
+        fit: BoxFit.cover,
       ),
     );
   }

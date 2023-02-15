@@ -15,6 +15,8 @@ abstract class DatabaseRepository<T extends Entity> {
 
   Future<Response> getUpdates();
 
+  Stream<Response> lives();
+
   Future<Response> setCache(T entity) async => Response<T>(result: entity);
 
   Future<Response> getCache(String id) async => Response<T>();

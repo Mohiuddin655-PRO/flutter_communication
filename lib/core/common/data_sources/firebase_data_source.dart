@@ -10,6 +10,8 @@ abstract class FirebaseDataSource<T> {
 
   Future<Response<List<T>>> gets();
 
+  Stream<Response<List<T>>> lives();
+
   Future<Response<List<T>>> getUpdates();
 
   Future<Response> delete(String id);
