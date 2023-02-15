@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/utils/states/cubit_state.dart';
@@ -63,16 +61,7 @@ class UserCubit extends Cubit<CubitState> {
     if (Validator.isValidString(uid)) {
       final response = await userGetUseCase.call(uid: uid);
       if (response.isSuccessful) {
-        dynamic data;
-        final result = response.result;
-        if (result is DataSnapshot){
-          data = UserEntity.from(data.value);
-        }
-        if (result is DocumentSnapshot){
-          data = UserEntity.from(data.value);
-        }
-        print("Data : $data");
-        emit(state.copyWith(data: data));
+        emit(state.copyWith(data: response.result));
       } else {
         emit(state.copyWith(exception: response.message));
       }
@@ -84,15 +73,16 @@ class UserCubit extends Cubit<CubitState> {
   Future<void> gets() async {
     final response = await userGetsUseCase.call();
     if (response.isSuccessful) {
-      dynamic list;
-      final result = response.result;
-      if (result is DataSnapshot){
-        list = result.children.map((e) => UserEntity.from(e.value)).toList();
-      }
-      if (result is QuerySnapshot){
-        list = result.docs.map((e) => UserEntity.from(e)).toList();
-      }
-      emit(state.copyWith(result: list));
+      emit(state.copyWith(result: response.result));
+    } else {
+      emit(state.copyWith(exception: response.message));
+    }
+  }
+
+  Future<void> getUpdates() async {
+    final response = await userGetsUseCase.call();
+    if (response.isSuccessful) {
+      emit(state.copyWith(result: response.result));
     } else {
       emit(state.copyWith(exception: response.message));
     }

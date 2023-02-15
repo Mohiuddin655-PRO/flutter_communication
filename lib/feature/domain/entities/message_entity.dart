@@ -75,7 +75,8 @@ class MessageEntity extends Entity {
     );
   }
 
-  Map<String, dynamic> get map {
+  @override
+  Map<String, dynamic> get source {
     return {
       "id": id,
       "uid": uid,
@@ -85,11 +86,6 @@ class MessageEntity extends Entity {
       "user_name": userName,
       "user_photo": userPhoto,
     };
-  }
-
-  @override
-  String toString() {
-    return "USER_ENTITY : [time : $time, id : $id, uid : $uid, user_name : $userName, user_photo : $userPhoto, photo : $photo, message : $message]";
   }
 
   @override

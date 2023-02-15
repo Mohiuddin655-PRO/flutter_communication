@@ -1,9 +1,8 @@
 import 'dart:developer';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
-class UserEntity extends Entity {
+class UserEntity extends Entity<UserEntity> {
   final String? email;
   final String? name;
   final String? password;
@@ -56,19 +55,8 @@ class UserEntity extends Entity {
   factory UserEntity.from(dynamic data) {
     dynamic email, name, password, phone, photo, uid, provider;
     dynamic designation, homeDistrict, workplace;
-    try {
-      if (data is DataSnapshot) {
-        email = data.child('email');
-        name = data.child('name');
-        password = data.child('password');
-        phone = data.child('phone');
-        photo = data.child('photo');
-        uid = data.child('uid');
-        provider = data.child('provider');
-        designation = data.child('designation');
-        homeDistrict = data.child('home_district');
-        workplace = data.child('workplace');
-      } else {
+    if (data is Map) {
+      try {
         email = data['email'];
         name = data['name'];
         password = data['password'];
@@ -79,26 +67,27 @@ class UserEntity extends Entity {
         designation = data['designation'];
         homeDistrict = data['home_district'];
         workplace = data['workplace'];
+        return UserEntity(
+          email: email,
+          name: name,
+          password: password,
+          phone: phone,
+          photo: photo,
+          uid: uid,
+          provider: provider,
+          designation: designation,
+          homeDistrict: homeDistrict,
+          workplace: workplace,
+        );
+      } catch (e) {
+        log(e.toString());
       }
-      return UserEntity(
-        email: email,
-        name: name,
-        password: password,
-        phone: phone,
-        photo: photo,
-        uid: uid,
-        provider: provider,
-        designation: designation,
-        homeDistrict: homeDistrict,
-        workplace: workplace,
-      );
-    } catch (e) {
-      log(e.toString());
-      return const UserEntity();
     }
+    return const UserEntity();
   }
 
-  Map<String, dynamic> get map {
+  @override
+  Map<String, dynamic> get source {
     return {
       "email": email,
       "name": name,
@@ -111,11 +100,6 @@ class UserEntity extends Entity {
       "home_district": homeDistrict,
       "workplace": workplace,
     };
-  }
-
-  @override
-  String toString() {
-    return "USER_ENTITY : [email : $email, name : $name, password : $password, phone : $phone, photo : $photo, uid : $uid, provider : $provider, designation : $designation, homeDistrict : $homeDistrict, workplace : $workplace]";
   }
 
   @override

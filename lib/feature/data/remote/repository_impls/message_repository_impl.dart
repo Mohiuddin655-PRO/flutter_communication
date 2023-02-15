@@ -16,7 +16,7 @@ class MessageRepositoryImpl extends DatabaseRepository<MessageEntity> {
 
   @override
   Future<Response> create(MessageEntity entity) {
-    return remote.insert(entity.uid ?? '', entity.map);
+    return remote.insert(entity.uid ?? '', entity.source);
   }
 
   @override
@@ -32,6 +32,11 @@ class MessageRepositoryImpl extends DatabaseRepository<MessageEntity> {
   @override
   Future<Response> gets() {
     return remote.gets();
+  }
+
+  @override
+  Future<Response> getUpdates() {
+    return remote.getUpdates();
   }
 
   @override

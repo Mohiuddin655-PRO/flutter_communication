@@ -16,7 +16,7 @@ class UserHelper {
 
   Future<bool> saveUser(UserEntity user) async {
     try {
-      final json = jsonEncode(user.map);
+      final json = jsonEncode(user.source);
       print("Data : $json");
       return helper.setString(key: userKey, value: json);
     } catch (_) {

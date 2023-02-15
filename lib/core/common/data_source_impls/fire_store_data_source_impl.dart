@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
 import '../data_sources/firebase_data_source.dart';
 
-class FireStoreDataSourceImpl extends FirebaseDataSource {
+abstract class FireStoreDataSourceImpl<T extends Entity>
+    extends FirebaseDataSource<T> {
   final String path;
 
   FireStoreDataSourceImpl({required this.path});
@@ -60,13 +62,13 @@ class FireStoreDataSourceImpl extends FirebaseDataSource {
   }
 
   @override
-  Future<Response> get(String id) async {
-    const response = Response();
+  Future<Response<T>> get(String id) async {
+    final response = Response<T>();
     try {
       final result = await database.collection(path).doc(id).get();
       log.put("GET", result);
       if (result.exists) {
-        return response.copyWith(result: true);
+        return response.copyWith(result: build(result.data()));
       } else {
         return response.copyWith(message: "Data not found!");
       }
@@ -77,13 +79,25 @@ class FireStoreDataSourceImpl extends FirebaseDataSource {
   }
 
   @override
-  Future<Response> gets() async {
-    const response = Response();
+  Future<Response<List<T>>> gets({
+    bool onlyUpdatedData = false,
+  }) async {
+    final response = Response<List<T>>();
     try {
       final result = await database.collection(path).get();
       log.put("GETS", result);
-      if (result.docs.isNotEmpty) {
-        return response.copyWith(result: result);
+      if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
+        if (onlyUpdatedData) {
+          List<T> list = result.docChanges.map((e) {
+            return build(e.doc.data());
+          }).toList();
+          return response.copyWith(result: list);
+        } else {
+          List<T> list = result.docs.map((e) {
+            return build(e.data());
+          }).toList();
+          return response.copyWith(result: list);
+        }
       } else {
         return response.copyWith(message: "Data not found!");
       }
@@ -92,4 +106,7 @@ class FireStoreDataSourceImpl extends FirebaseDataSource {
       return response.copyWith(message: _.toString());
     }
   }
+
+  @override
+  Future<Response<List<T>>> getUpdates() => gets(onlyUpdatedData: true);
 }

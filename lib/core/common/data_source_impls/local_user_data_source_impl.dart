@@ -15,7 +15,7 @@ class LocalUserDataSourceImpl extends KeepUserDataSource<UserEntity> {
   @override
   Future<Response> insert(UserEntity? entity) async {
     const response = Response();
-    final json = jsonEncode(entity?.map ?? '');
+    final json = jsonEncode(entity?.source ?? '');
     final success = await preferences.setString(key, json);
     if (success) {
       return response.copyWith(isSuccessful: success);

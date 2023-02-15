@@ -70,7 +70,7 @@ Widget _home(dynamic data) {
         create: (context) => locator<AuthCubit>(),
       ),
       BlocProvider(
-        create: (context) => locator<UserCubit>()..get(uid: uid),
+        create: (context) => locator<UserCubit>()..get(uid: uid)..gets()..getUpdates(),
       ),
     ],
     child: const HomePage(),

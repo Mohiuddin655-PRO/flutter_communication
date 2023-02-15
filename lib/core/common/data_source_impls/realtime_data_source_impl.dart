@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
 import '../data_sources/firebase_data_source.dart';
 
-class RealtimeDataSourceImpl extends FirebaseDataSource {
+abstract class RealtimeDataSourceImpl<T extends Entity>
+    extends FirebaseDataSource<T> {
   final String path;
 
   RealtimeDataSourceImpl({required this.path});
@@ -60,13 +62,13 @@ class RealtimeDataSourceImpl extends FirebaseDataSource {
   }
 
   @override
-  Future<Response> get(String id) async {
-    const response = Response();
+  Future<Response<T>> get(String id) async {
+    final response = Response<T>();
     try {
       final result = await database.ref(path).child(id).get();
       log.put("GET", result);
       if (result.exists) {
-        return response.copyWith(result: result);
+        return response.copyWith(result: build(result.value));
       } else {
         return response.copyWith(message: "Data not found!");
       }
@@ -77,19 +79,27 @@ class RealtimeDataSourceImpl extends FirebaseDataSource {
   }
 
   @override
-  Future<Response> gets() async {
-    const response = Response();
+  Future<Response<List<T>>> gets({
+    bool onlyUpdatedData = false,
+  }) async {
+    final response = Response<List<T>>();
     try {
       final result = await database.ref(path).get();
       log.put("GETS", result);
       if (result.exists) {
-        return response.copyWith(result: result);
+        List<T> list = result.children.map((e) {
+          return build(e.value);
+        }).toList();
+        return response.copyWith(result: list);
       } else {
         return response.copyWith(message: "Data not found!");
       }
-    } catch (_) {
-      log.put("UPDATE", _.toString());
+    } on Exception catch (_) {
+      log.put("GETS", _.toString());
       return response.copyWith(message: _.toString());
     }
   }
+
+  @override
+  Future<Response<List<T>>> getUpdates() => gets(onlyUpdatedData: true);
 }

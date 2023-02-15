@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-class Entity extends Equatable {
-  final String id;
+abstract class Entity<T> extends Equatable {
+  final String? id;
   final String? uid;
   final int? time;
 
@@ -11,6 +11,11 @@ class Entity extends Equatable {
     this.time,
   });
 
+  Map<String, dynamic> get source;
+
   @override
   List<Object?> get props => [id, uid, time];
+
+  @override
+  String toString() => source.toString();
 }
