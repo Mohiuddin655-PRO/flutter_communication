@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 
-import '../../widget/screen.dart';
 import 'chat_body.dart';
 
 class ChatPage extends StatefulWidget {
   static const String title = "Chat";
   static const String route = "chat";
 
-  const ChatPage({Key? key}) : super(key: key);
+  final UserEntity user;
+
+  const ChatPage({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -16,13 +21,14 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    return const Screen(
-      title: ChatPage.title,
-      transparentAppBar: true,
-      fixedContent: false,
-      hideLeadingButton: true,
-      background: Colors.white,
-      body: ChatBody(),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          widget.user.name ?? ChatPage.title,
+        ),
+      ),
+      body: const ChatBody(),
     );
   }
 }

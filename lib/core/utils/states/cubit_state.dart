@@ -30,6 +30,15 @@ class CubitState<T> {
     );
   }
 
+  Data? getData<Data>() => data is Data ? data : null;
+
+  List<E?> getResult<E>() {
+    return result.map((e) {
+      final value = e as dynamic;
+      return value is E ? value : null;
+    }).toList();
+  }
+
   @override
   String toString() {
     return 'CubitState: \n{'

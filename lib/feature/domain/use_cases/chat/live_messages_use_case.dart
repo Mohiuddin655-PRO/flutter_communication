@@ -3,10 +3,10 @@ import 'package:flutter_communication/feature/domain/entities/message_entity.dar
 import '../../../../core/common/responses/response.dart';
 import '../../repositories/database_repository.dart';
 
-class LiveMessageUseCase {
+class LiveMessagesUseCase {
   final DatabaseRepository<MessageEntity> repository;
 
-  LiveMessageUseCase({
+  LiveMessagesUseCase({
     required this.repository,
   });
 

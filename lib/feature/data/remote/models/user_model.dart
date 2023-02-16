@@ -12,6 +12,6 @@ class UserModel extends UserEntity {
           email: email,
           password: password,
           photo: photo,
-          uid: uid,
+          id: uid,
         );
 }

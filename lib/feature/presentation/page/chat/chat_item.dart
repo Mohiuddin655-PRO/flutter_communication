@@ -3,19 +3,21 @@ import 'package:flutter_communication/core/constants/colors.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
 
-class MessageTile extends StatefulWidget {
+class ChatItem extends StatefulWidget {
   final MessageEntity item;
 
-  const MessageTile({
+  const ChatItem({
     Key? key,
     required this.item,
   }) : super(key: key);
 
   @override
-  State<MessageTile> createState() => _MessageTileState();
+  State<ChatItem> createState() => _ChatItemState();
 }
 
-class _MessageTileState extends State<MessageTile> {
+class _ChatItemState extends State<ChatItem> {
+  late final size = MediaQuery.of(context).size;
+
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
@@ -34,6 +36,9 @@ class _MessageTileState extends State<MessageTile> {
               item: item.sender,
             ),
           Container(
+            constraints: BoxConstraints(
+              maxWidth: size.width * 0.75,
+            ),
             padding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,

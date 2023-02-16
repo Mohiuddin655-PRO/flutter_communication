@@ -30,7 +30,7 @@ class MessageCubit extends Cubit<CubitState> {
   Future<void> create({
     required MessageEntity entity,
   }) async {
-    if (Validator.isValidString(entity.uid)) {
+    if (Validator.isValidString(entity.id)) {
       final response = await addMessageUseCase.call(entity: entity);
       if (response.isSuccessful) {
         emit(state.copyWith(data: entity));

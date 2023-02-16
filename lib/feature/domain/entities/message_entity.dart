@@ -5,74 +5,78 @@ import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 class MessageEntity extends Entity {
+  final bool isSeen;
   final String? message;
   final String? photo;
-  final MessagingUser sender;
-  final MessagingUser receiver;
+  final Sender sender;
+  final List<String> views;
 
   const MessageEntity({
     super.id = "",
-    super.uid,
     super.time,
+    this.isSeen = false,
     this.photo,
     this.message,
-    this.sender = const MessagingUser(),
-    this.receiver = const MessagingUser(),
+    this.sender = const Sender(),
+    this.views = const [],
   });
 
   MessageEntity copyWith({
     String? id,
-    String? uid,
     int? time,
+    bool? isSeen,
     String? message,
     String? photo,
-    MessagingUser? sender,
-    MessagingUser? receiver,
+    Sender? sender,
+    Sender? receiver,
+    List<String>? views,
   }) {
     return MessageEntity(
       id: id ?? this.id,
-      uid: uid ?? this.uid,
       time: time ?? this.time,
+      isSeen: isSeen ?? this.isSeen,
       message: message ?? this.message,
       photo: photo ?? this.photo,
-      receiver: receiver ?? this.receiver,
       sender: sender ?? this.sender,
+      views: views ?? this.views,
     );
   }
 
   factory MessageEntity.from(dynamic data) {
-    dynamic id, uid, time;
+    dynamic id, time;
+    dynamic seen;
     dynamic message, photo;
     dynamic sender, receiver;
+    dynamic views;
     try {
       if (data is DataSnapshot) {
         id = data.child('id');
-        uid = data.child('uid');
         time = data.child('time');
+        seen = data.child('seen');
         message = data.child('message');
         photo = data.child('photo');
         sender = data.child('sender');
-        receiver = data.child('receiver');
+        views = data.child('views');
       } else {
         id = data['id'];
-        uid = data['uid'];
         time = data['time'];
+        seen = data['seen'];
         message = data['message'];
         photo = data['photo'];
         sender = data['sender'];
-        receiver = data['receiver'];
+        views = data['views'];
       }
     } catch (e) {
       log(e.toString());
     }
     return MessageEntity(
-      id: id ?? "",
-      uid: uid ?? "",
-      time: time ?? 0,
-      photo: photo ?? "",
-      message: message ?? "",
-      sender: MessagingUser.from(sender),
-      receiver: MessagingUser.from(receiver),
+      id: id is String ? id : "",
+      time: time is int ? time : 0,
+      isSeen: seen is bool ? seen : false,
+      photo: photo is String ? photo : "",
+      message: message is String ? message : "",
+      sender: Sender.from(sender),
+      views: views is List<String> || views is Map ? views : [],
     );
   }
 
@@ -82,33 +86,31 @@ class MessageEntity extends Entity {
   Map<String, dynamic> get source {
     return {
       "id": id,
-      "uid": uid,
       "time": time,
+      "seen": isSeen,
       "message": message,
       "photo": photo,
       "sender": sender.source,
-      "receiver": receiver.source,
     };
   }
 
   @override
   List<Object?> get props => [
         id,
-        uid,
         time,
+        isSeen,
         photo,
         message,
         sender,
-        receiver,
       ];
 }
 
-class MessagingUser {
-  final String id;
+class Sender {
+  final String? id;
   final String? name;
   final String? photo;
 
-  const MessagingUser({
+  const Sender({
     this.id = "",
     this.name,
     this.photo,
@@ -122,15 +124,15 @@ class MessagingUser {
     };
   }
 
-  factory MessagingUser.from(Map<String, dynamic>? source) {
+  factory Sender.from(Map<String, dynamic>? source) {
     final data = source ?? {};
     dynamic id = data["id"];
     dynamic name = data["name"];
     dynamic photo = data["photo"];
-    return MessagingUser(
-      id: id ?? "",
-      name: name,
-      photo: photo,
+    return Sender(
+      id: id is String ? id : "",
+      name: name is String ? name : "",
+      photo: photo is String ? photo : "",
     );
   }
 }

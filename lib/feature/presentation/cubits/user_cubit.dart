@@ -38,7 +38,7 @@ class UserCubit extends Cubit<CubitState> {
   Future<void> create({
     required UserEntity entity,
   }) async {
-    if (Validator.isValidString(entity.uid)) {
+    if (Validator.isValidString(entity.id)) {
       final response = await userCreateUseCase.call(entity: entity);
       if (response.isSuccessful) {
         emit(state.copyWith(data: entity));
@@ -117,7 +117,7 @@ class UserCubit extends Cubit<CubitState> {
   Future<void> save({
     required UserEntity entity,
   }) async {
-    if (Validator.isValidString(entity.uid)) {
+    if (Validator.isValidString(entity.id)) {
       final response = await userUpdateUseCase.call(
         uid: "uid",
         map: entity.source,

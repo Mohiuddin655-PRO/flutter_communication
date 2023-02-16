@@ -16,7 +16,7 @@ class MessageRepository extends DatabaseRepository<MessageEntity> {
 
   @override
   Future<Response> create(MessageEntity entity) {
-    return remote.insert(entity.uid ?? '', entity.source);
+    return remote.insert(entity.id ?? '', entity.source);
   }
 
   @override

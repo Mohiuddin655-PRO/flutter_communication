@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
           titleAllCaps: true,
           titleCenter: true,
           titleStyle: FontWeight.bold,
-          background: KColors.primary.withOpacity(0.5),
+          //background: KColors.primary.withOpacity(0.5),
           body: index == 1 ? const ProfileBody() : const HomeBody(),
           drawer: HomeDrawer(
             currentIndex: index,

@@ -11,7 +11,7 @@ import 'package:flutter_communication/feature/domain/use_cases/chat/delete_messa
 import 'package:flutter_communication/feature/domain/use_cases/chat/get_message_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/gets_message_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/gets_update_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/live_message_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/chat/live_messages_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/update_message_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/live_user_use_case.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -137,8 +137,8 @@ void _useCases() {
   locator.registerLazySingleton<UserRemoveUseCase>(() {
     return UserRemoveUseCase(repository: locator());
   });
-  locator.registerLazySingleton<LiveUserUseCase>(() {
-    return LiveUserUseCase(repository: locator());
+  locator.registerLazySingleton<LiveUsersUseCase>(() {
+    return LiveUsersUseCase(repository: locator());
   });
   //MESSAGE
 
@@ -157,8 +157,8 @@ void _useCases() {
   locator.registerLazySingleton<GetsUpdateMessageUseCase>(() {
     return GetsUpdateMessageUseCase(repository: locator());
   });
-  locator.registerLazySingleton<LiveMessageUseCase>(() {
-    return LiveMessageUseCase(repository: locator());
+  locator.registerLazySingleton<LiveMessagesUseCase>(() {
+    return LiveMessagesUseCase(repository: locator());
   });
   locator.registerLazySingleton<UpdateMessageUseCase>(() {
     return UpdateMessageUseCase(repository: locator());

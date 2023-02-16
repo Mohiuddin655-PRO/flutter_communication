@@ -87,7 +87,7 @@ class AuthCubit extends Cubit<CubitState> {
         final result = response.result?.user;
         if (result != null) {
           final user = UserEntity(
-            uid: result.uid,
+            id: result.uid,
             email: result.email,
             phone: entity.phone ?? result.phoneNumber,
             name: entity.name ?? result.displayName,
@@ -132,7 +132,7 @@ class AuthCubit extends Cubit<CubitState> {
         final result = response.result?.user;
         if (result != null) {
           final user = entity.copyWith(
-            uid: result.uid,
+            id: result.uid,
             email: result.email,
             name: entity.name ?? result.displayName,
             phone: entity.phone ?? result.phoneNumber,
@@ -169,7 +169,7 @@ class AuthCubit extends Cubit<CubitState> {
       if (finalResponse.isSuccessful) {
         final currentData = finalResponse.result?.user;
         final user = entity.copyWith(
-          uid: currentData?.uid ?? result.id,
+          id: currentData?.uid ?? result.id,
           email: result.email,
           name: entity.name ?? result.name,
           phone: entity.phone,
@@ -205,7 +205,7 @@ class AuthCubit extends Cubit<CubitState> {
       if (finalResponse.isSuccessful) {
         final currentData = finalResponse.result?.user;
         final user = entity.copyWith(
-          uid: currentData?.uid ?? result.id,
+          id: currentData?.uid ?? result.id,
           name: entity.name ?? result.name,
           phone: entity.phone,
           photo: entity.photo ?? result.photo,

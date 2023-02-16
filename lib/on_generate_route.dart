@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/feature/presentation/cubits/message_cubit.dart';
+import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
 import 'package:flutter_communication/feature/presentation/page/search/search_page.dart';
@@ -8,6 +8,7 @@ import 'package:flutter_communication/feature/presentation/page/splash/splash_pa
 
 import 'dependency_injection.dart';
 import 'feature/presentation/cubits/auth_cubit.dart';
+import 'feature/presentation/cubits/message_cubit.dart';
 import 'feature/presentation/cubits/user_cubit.dart';
 import 'feature/presentation/page/auth/forget_password/auth_forget_password_page.dart';
 import 'feature/presentation/page/auth/sign_in/auth_sign_in_page.dart';
@@ -34,7 +35,7 @@ class OnGenerateRoute {
       case ProfilePage.route:
         return routeBuilder(widget: _profile());
       case ChatPage.route:
-        return routeBuilder(widget: _chat());
+        return routeBuilder(widget: _chat(settings.arguments));
       case SearchPage.route:
         return routeBuilder(widget: _search());
       default:
@@ -77,9 +78,6 @@ Widget _home(dynamic data) {
           ..gets()
           ..getUpdates(),
       ),
-      BlocProvider(
-        create: (context) => locator<MessageCubit>(),
-      ),
     ],
     child: const HomePage(),
   );
@@ -115,10 +113,20 @@ Widget _profile() {
   );
 }
 
-Widget _chat() {
-  return BlocProvider(
-    create: (context) => locator<AuthCubit>()..isLoggedIn,
-    child: const ChatPage(),
+Widget _chat(dynamic arguments) {
+  final data = arguments is Map<String, dynamic> ? arguments : null;
+  final user = data?["user"];
+  final userCubit = data?["user_cubit"];
+  return MultiBlocProvider(
+    providers: [
+      if (userCubit is UserCubit) BlocProvider.value(value: userCubit),
+      BlocProvider(
+        create: (context) => locator<MessageCubit>(),
+      ),
+    ],
+    child: ChatPage(
+      user: user is UserEntity ? user : const UserEntity(),
+    ),
   );
 }
 

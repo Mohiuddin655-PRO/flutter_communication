@@ -16,7 +16,7 @@ class UserRepository extends DatabaseRepository<UserEntity> {
 
   @override
   Future<Response> create(UserEntity entity) {
-    return remoteDataSource.insert(entity.uid ?? '', entity.source);
+    return remoteDataSource.insert(entity.id ?? '', entity.source);
   }
 
   @override

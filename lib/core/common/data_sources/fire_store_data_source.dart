@@ -17,13 +17,17 @@ abstract class FireStoreDataSource<T extends Entity>
 
   FirebaseFirestore get database => _db ??= FirebaseFirestore.instance;
 
+  CollectionReference source(FirebaseFirestore database) =>
+      database.collection(path);
+
   String get uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
   Future<Response> insert(String id, Map<String, dynamic> data) async {
     const response = Response();
     if (id.isNotEmpty) {
-      final reference = database.collection(path).doc(id);
+      //final reference = database.collection(path).doc(id);
+      final reference = source(database).doc(id);
       return await reference.get().then((value) async {
         if (!value.exists) {
           await reference.set(data);
@@ -43,7 +47,8 @@ abstract class FireStoreDataSource<T extends Entity>
   Future<Response> update(String id, Map<String, dynamic> data) async {
     const response = Response();
     try {
-      await database.collection(path).doc(id).update(data);
+      //await database.collection(path).doc(id).update(data);
+      await source(database).doc(id).update(data);
       return response.copyWith(result: true);
     } catch (_) {
       log.put("UPDATE", _.toString());
@@ -55,7 +60,8 @@ abstract class FireStoreDataSource<T extends Entity>
   Future<Response> delete(String id) async {
     const response = Response();
     try {
-      await database.collection(path).doc(id).delete();
+      //await database.collection(path).doc(id).delete();
+      await source(database).doc(id).delete();
       return response.copyWith(result: true);
     } catch (_) {
       log.put("DELETE", _.toString());
@@ -67,7 +73,8 @@ abstract class FireStoreDataSource<T extends Entity>
   Future<Response<T>> get(String id) async {
     final response = Response<T>();
     try {
-      final result = await database.collection(path).doc(id).get();
+      //final result = await database.collection(path).doc(id).get();
+      final result = await source(database).doc(id).get();
       log.put("GET", result);
       if (result.exists) {
         return response.copyWith(result: build(result.data()));
@@ -86,7 +93,8 @@ abstract class FireStoreDataSource<T extends Entity>
   }) async {
     final response = Response<List<T>>();
     try {
-      final result = await database.collection(path).get();
+      //final result = await database.collection(path).get();
+      final result = await source(database).get();
       log.put("GETS", result);
       if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
         if (onlyUpdatedData) {
@@ -119,7 +127,7 @@ abstract class FireStoreDataSource<T extends Entity>
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      database.collection(path).snapshots().listen((result) {
+      source(database).snapshots().listen((result) {
         log.put("GETS", result);
         if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
           if (onlyUpdatedData) {
