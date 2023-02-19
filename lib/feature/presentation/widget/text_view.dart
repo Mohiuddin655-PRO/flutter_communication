@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class TextView extends StatelessWidget {
   final double? width, height;
+  final bool visible;
   final String text;
   final TextAlign? textAlign;
   final Color? textColor;
@@ -17,6 +18,7 @@ class TextView extends StatelessWidget {
     required this.text,
     this.width,
     this.height,
+    this.visible = true,
     this.textAlign,
     this.textColor,
     this.textOverflow,
@@ -30,22 +32,25 @@ class TextView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: width,
-        height: height,
-        padding: padding,
-        margin: margin,
-        child: Text(
-          text,
-          maxLines: maxLines,
-          textAlign: textAlign,
-          overflow: textOverflow,
-          style: TextStyle(
-            fontSize: textSize,
-            fontWeight: textStyle,
-            color: textColor,
+    return Visibility(
+      visible: visible,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Container(
+          width: width,
+          height: height,
+          padding: padding,
+          margin: margin,
+          child: Text(
+            text,
+            maxLines: maxLines,
+            textAlign: textAlign,
+            overflow: textOverflow,
+            style: TextStyle(
+              fontSize: textSize,
+              fontWeight: textStyle,
+              color: textColor,
+            ),
           ),
         ),
       ),

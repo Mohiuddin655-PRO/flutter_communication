@@ -1,22 +1,22 @@
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
+import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/repositories/database_repository.dart';
 
 import '../../../../core/common/data_sources/firebase_data_source.dart';
 import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
 
-class MessageRepository extends DatabaseRepository<MessageEntity> {
+class ChatRoomRepository extends DatabaseRepository<RoomEntity> {
   final KeepUserDataSource local;
   final FirebaseDataSource remote;
 
-  MessageRepository({
+  ChatRoomRepository({
     required this.local,
     required this.remote,
   });
 
   @override
   Future<Response> create<R>(
-    MessageEntity entity, [
+    RoomEntity entity, [
     R? Function(R parent)? source,
   ]) {
     return remote.insert(
@@ -89,7 +89,7 @@ class MessageRepository extends DatabaseRepository<MessageEntity> {
   }
 
   @override
-  Future<Response> setCache(MessageEntity entity) {
+  Future<Response> setCache(RoomEntity entity) {
     return local.insert(entity);
   }
 

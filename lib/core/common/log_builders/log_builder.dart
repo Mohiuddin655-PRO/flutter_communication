@@ -89,7 +89,6 @@ class LogBuilder {
 
   void build() {
     _builder = "$_builder}\n\n";
-    print(_builder);
     log(_builder, name: _tag);
   }
 }

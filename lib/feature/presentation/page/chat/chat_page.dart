@@ -25,10 +25,12 @@ class _ChatPageState extends State<ChatPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          widget.user.name ?? ChatPage.title,
+          widget.user.name.isNotEmpty ? widget.user.name : ChatPage.title,
         ),
       ),
-      body: const ChatBody(),
+      body: ChatBody(
+        friend: widget.user,
+      ),
     );
   }
 }

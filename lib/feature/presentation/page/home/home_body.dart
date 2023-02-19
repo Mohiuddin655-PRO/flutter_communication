@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_communication/core/common/responses/response.dart';
-import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
 import 'package:flutter_communication/dependency_injection.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
+import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
+import 'package:flutter_communication/feature/domain/use_cases/chat_room/live_rooms_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/user/user_get_use_case.dart';
 import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
 import 'package:flutter_communication/feature/presentation/widget/text_view.dart';
+import 'package:flutter_communication/feature/presentation/widget/view.dart';
+import 'package:flutter_communication/utils/helpers/chat_helper.dart';
 
-import '../../../domain/use_cases/user/live_user_use_case.dart';
+import '../../widget/error_view.dart';
 
 class HomeBody extends StatefulWidget {
   const HomeBody({
@@ -22,36 +26,47 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> {
   late final userCubit = context.read<UserCubit>();
-  late final liveUsers = locator<LiveUsersUseCase>();
+  late final liveUsers = locator<LiveChatsUseCase>();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: liveUsers.call(),
       builder: (context, AsyncSnapshot snapshot) {
-        print("User Streams : $snapshot");
+        print("Chat Streams : $snapshot");
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            return const CircularProgressIndicator();
+            return const View(
+              gravity: Alignment.center,
+              child: CircularProgressIndicator(),
+            );
           case ConnectionState.active:
           case ConnectionState.done:
-            final response = snapshot.data as Response;
-            return _Users(
-              userCubit: userCubit,
-              items: response.result,
-            );
+            final response = snapshot.data;
+            if (response is Response) {
+              return _Rooms(
+                userCubit: userCubit,
+                items: response.result,
+              );
+            } else {
+              return const ErrorView(
+                title: "No chat found!",
+                subtitle: "You didn't chat yet",
+                icon: Icons.message,
+              );
+            }
         }
       },
     );
   }
 }
 
-class _Users extends StatelessWidget {
-  final List<UserEntity> items;
+class _Rooms extends StatelessWidget {
+  final List<RoomEntity> items;
   final UserCubit userCubit;
 
-  const _Users({
+  const _Rooms({
     Key? key,
     required this.items,
     required this.userCubit,
@@ -63,9 +78,9 @@ class _Users extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _User(
+        return _Room(
           item: item,
-          visible: item.id != AuthHelper.uid,
+          //visible: item.id != AuthHelper.uid,
           onClick: (item) {
             Navigator.pushNamed(
               context,
@@ -82,12 +97,12 @@ class _Users extends StatelessWidget {
   }
 }
 
-class _User extends StatelessWidget {
+class _Room extends StatefulWidget {
   final bool visible;
-  final UserEntity item;
+  final RoomEntity item;
   final Function(UserEntity item)? onClick;
 
-  const _User({
+  const _Room({
     Key? key,
     required this.item,
     this.visible = true,
@@ -95,37 +110,58 @@ class _User extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<_Room> createState() => _RoomState();
+}
+
+class _RoomState extends State<_Room> {
+  late final getUser = locator<GetUserUseCase>();
+
+  @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: visible,
-      child: ListTile(
-        onTap: () => onClick?.call(item),
-        title: TextView(
-          text: item.name ?? "",
-        ),
-        subtitle: TextView(
-          text: item.email ?? "",
-        ),
-        leading: CircleAvatar(
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+    return View(
+      visible: widget.visible,
+      child: FutureBuilder<Response>(
+          future: getUser.call(
+            uid: ChatRoomHelper.roomingUid(
+              owner: widget.item.owner,
+              contributor: widget.item.contributor,
             ),
-            child: item.photo.isValid
-                ? Image.network(
-                    item.photo ?? "",
-                    fit: BoxFit.cover,
-                  )
-                : Image.asset(
-                    "assets/img/img_user.jpeg",
-                    fit: BoxFit.cover,
-                  ),
           ),
-        ),
-      ),
+          builder: (context, snapshot) {
+            final user = snapshot.data?.result;
+            if (user is UserEntity) {
+              return ListTile(
+                onTap: () => widget.onClick?.call(user),
+                title: TextView(
+                  text: user.name,
+                ),
+                subtitle: TextView(
+                  text: widget.item.recent.message,
+                ),
+                leading: CircleAvatar(
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: user.photo.isValid
+                        ? Image.network(
+                            user.photo,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            "assets/img/img_user.jpeg",
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 }

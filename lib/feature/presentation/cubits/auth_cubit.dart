@@ -81,17 +81,17 @@ class AuthCubit extends Cubit<CubitState> {
       try {
         emit(state.copyWith(isLoading: true));
         final response = await signUpWithEmailAndPasswordUseCase.call(
-          email: email ?? '',
-          password: password ?? '',
+          email: email,
+          password: password,
         );
         final result = response.result?.user;
         if (result != null) {
-          final user = UserEntity(
+          final user = entity.copyWith(
             id: result.uid,
             email: result.email,
-            phone: entity.phone ?? result.phoneNumber,
-            name: entity.name ?? result.displayName,
-            photo: entity.photo ?? result.photoURL,
+            phone: result.phoneNumber,
+            name: result.displayName,
+            photo: result.photoURL,
           );
           final userResponse = await userCreateUseCase.call(entity: user);
           if (userResponse.isSuccessful || userResponse.snapshot != null) {
@@ -126,17 +126,17 @@ class AuthCubit extends Cubit<CubitState> {
       try {
         emit(state.copyWith(isLoading: true));
         final response = await signInWithEmailAndPasswordUseCase.call(
-          email: email ?? '',
-          password: password ?? '',
+          email: email,
+          password: password,
         );
         final result = response.result?.user;
         if (result != null) {
           final user = entity.copyWith(
             id: result.uid,
             email: result.email,
-            name: entity.name ?? result.displayName,
-            phone: entity.phone ?? result.phoneNumber,
-            photo: entity.photo ?? result.photoURL,
+            name: result.displayName,
+            phone: result.phoneNumber,
+            photo: result.photoURL,
             provider: AuthProvider.email.name,
           );
           final userResponse = await userCreateUseCase.call(entity: user);
@@ -171,9 +171,8 @@ class AuthCubit extends Cubit<CubitState> {
         final user = entity.copyWith(
           id: currentData?.uid ?? result.id,
           email: result.email,
-          name: entity.name ?? result.name,
-          phone: entity.phone,
-          photo: entity.photo ?? result.photo,
+          name: result.name,
+          photo: result.photo,
           provider: AuthProvider.facebook.name,
         );
         final userResponse = await userCreateUseCase.call(entity: user);
@@ -206,9 +205,8 @@ class AuthCubit extends Cubit<CubitState> {
         final currentData = finalResponse.result?.user;
         final user = entity.copyWith(
           id: currentData?.uid ?? result.id,
-          name: entity.name ?? result.name,
-          phone: entity.phone,
-          photo: entity.photo ?? result.photo,
+          name: result.name,
+          photo: result.photo,
           email: result.email,
           provider: AuthProvider.google.name,
         );
@@ -237,8 +235,8 @@ class AuthCubit extends Cubit<CubitState> {
       final userResponse = await userBackupUseCase.call(uid);
       final user = userResponse.result;
       if (userResponse.isSuccessful && user is UserEntity) {
-        final email = user.email ?? '';
-        final password = user.password ?? '';
+        final email = user.email;
+        final password = user.password;
         final loginResponse = await signInWithEmailAndPasswordUseCase.call(
           email: email,
           password: password,

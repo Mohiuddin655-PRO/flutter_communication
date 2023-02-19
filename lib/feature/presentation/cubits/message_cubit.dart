@@ -28,10 +28,14 @@ class MessageCubit extends Cubit<CubitState> {
   }) : super(CubitState());
 
   Future<void> create({
+    required String roomId,
     required MessageEntity entity,
   }) async {
     if (Validator.isValidString(entity.id)) {
-      final response = await addMessageUseCase.call(entity: entity);
+      final response = await addMessageUseCase.call(
+        entity: entity,
+        roomId: roomId,
+      );
       if (response.isSuccessful) {
         emit(state.copyWith(data: entity));
       } else {
@@ -43,38 +47,51 @@ class MessageCubit extends Cubit<CubitState> {
   }
 
   Future<void> update({
-    required String uid,
+    required String roomId,
+    required String messageId,
     required Map<String, dynamic> map,
   }) async {
-    if (Validator.isValidString(uid)) {
-      final response = await updateMessageUseCase.call(id: uid, map: map);
+    if (Validator.isValidString(roomId) && Validator.isValidString(messageId)) {
+      final response = await updateMessageUseCase.call(
+        roomId: roomId,
+        id: messageId,
+        map: map,
+      );
       if (response.isSuccessful) {
         emit(state.copyWith(data: map));
       } else {
         emit(state.copyWith(exception: response.message));
       }
     } else {
-      emit(state.copyWith(exception: 'ID is not valid!'));
+      emit(state.copyWith(exception: 'Requirement not valid!'));
     }
   }
 
   Future<void> get({
-    required String uid,
+    required String roomId,
+    required String messageId,
   }) async {
-    if (Validator.isValidString(uid)) {
-      final response = await getMessageUseCase.call(id: uid);
+    if (Validator.isValidString(roomId) && Validator.isValidString(messageId)) {
+      final response = await getMessageUseCase.call(
+        id: messageId,
+        roomId: roomId,
+      );
       if (response.isSuccessful) {
         emit(state.copyWith(data: response.result));
       } else {
         emit(state.copyWith(exception: response.message));
       }
     } else {
-      emit(state.copyWith(exception: 'ID is not valid!'));
+      emit(state.copyWith(exception: 'Requirement not valid!'));
     }
   }
 
-  Future<void> gets() async {
-    final response = await getsMessageUseCase.call();
+  Future<void> gets({
+    required String roomId,
+  }) async {
+    final response = await getsMessageUseCase.call(
+      roomId: roomId,
+    );
     if (response.isSuccessful) {
       emit(state.copyWith(result: response.result));
     } else {
@@ -82,8 +99,12 @@ class MessageCubit extends Cubit<CubitState> {
     }
   }
 
-  Future<void> getUpdates() async {
-    final response = await getsUpdateMessageUseCase.call();
+  Future<void> getUpdates({
+    required String roomId,
+  }) async {
+    final response = await getsUpdateMessageUseCase.call(
+      roomId: roomId,
+    );
     if (response.isSuccessful) {
       emit(state.copyWith(result: response.result));
     } else {
@@ -92,12 +113,16 @@ class MessageCubit extends Cubit<CubitState> {
   }
 
   Future<void> delete({
-    required String uid,
+    required String roomId,
+    required String messageId,
   }) async {
-    if (Validator.isValidString(uid)) {
-      final response = await deleteMessageUseCase.call(id: uid);
+    if (Validator.isValidString(messageId)) {
+      final response = await deleteMessageUseCase.call(
+        roomId: roomId,
+        id: messageId,
+      );
       if (response.isSuccessful) {
-        emit(state.copyWith(data: uid));
+        emit(state.copyWith(data: messageId));
       } else {
         emit(state.copyWith(exception: response.message));
       }

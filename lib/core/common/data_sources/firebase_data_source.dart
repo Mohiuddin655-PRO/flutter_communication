@@ -2,19 +2,39 @@ import '../log_builders/log_builder.dart';
 import '../responses/response.dart';
 
 abstract class FirebaseDataSource<T> {
-  Future<Response> insert(String id, Map<String, dynamic> data);
+  Future<Response> insert<R>(
+    String id,
+    Map<String, dynamic> data, {
+    R? Function(R parent)? source,
+  });
 
-  Future<Response> update(String id, Map<String, dynamic> data);
+  Future<Response> update<R>(
+    String id,
+    Map<String, dynamic> data, {
+    R? Function(R parent)? source,
+  });
 
-  Future<Response<T>> get(String id);
+  Future<Response<T>> get<R>(
+    String id, {
+    R? Function(R parent)? source,
+  });
 
-  Future<Response<List<T>>> gets();
+  Future<Response<List<T>>> gets<R>({
+    R? Function(R parent)? source,
+  });
 
-  Stream<Response<List<T>>> lives();
+  Stream<Response<List<T>>> lives<R>({
+    R? Function(R parent)? source,
+  });
 
-  Future<Response<List<T>>> getUpdates();
+  Future<Response<List<T>>> getUpdates<R>({
+    R? Function(R parent)? source,
+  });
 
-  Future<Response> delete(String id);
+  Future<Response> delete<R>(
+    String id, {
+    R? Function(R parent)? source,
+  });
 
   T build(dynamic source);
 

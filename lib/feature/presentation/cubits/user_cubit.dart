@@ -1,9 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_room_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/user/update_user_chat_room_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/user_remove_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/user_save_use_case.dart';
 
 import '../../../core/utils/states/cubit_state.dart';
 import '../../../core/utils/validators/validator.dart';
+import '../../domain/entities/base_entity.dart';
+import '../../domain/entities/room_entity.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/use_cases/user/user_backup_use_case.dart';
 import '../../domain/use_cases/user/user_create_use_case.dart';
@@ -16,12 +20,14 @@ class UserCubit extends Cubit<CubitState> {
   final UserBackupUseCase userBackupUseCase;
   final UserCreateUseCase userCreateUseCase;
   final UserDeleteUseCase userDeleteUseCase;
-  final UserGetUseCase userGetUseCase;
+  final GetUserUseCase userGetUseCase;
   final UserGetsUseCase userGetUpdatesUseCase;
   final UserGetsUseCase userGetsUseCase;
   final UserRemoveUseCase userRemoveUseCase;
   final UserSaveUseCase userSaveUseCase;
   final UserUpdateUseCase userUpdateUseCase;
+  final UpdateUserChatRoomUseCase updateUserRoomUseCase;
+  final CreateRoomUseCase createRoomUseCase;
 
   UserCubit({
     required this.userBackupUseCase,
@@ -33,6 +39,8 @@ class UserCubit extends Cubit<CubitState> {
     required this.userRemoveUseCase,
     required this.userSaveUseCase,
     required this.userUpdateUseCase,
+    required this.updateUserRoomUseCase,
+    required this.createRoomUseCase,
   }) : super(CubitState());
 
   Future<void> create({
@@ -50,6 +58,34 @@ class UserCubit extends Cubit<CubitState> {
     }
   }
 
+  Future<void> createRoom({
+    required String roomId,
+    required UserEntity me,
+    required UserEntity friend,
+  }) async {
+    if (Validator.isValidString(roomId) &&
+        Validator.isValidString(me.id) &&
+        Validator.isValidString(friend.id)) {
+      final userRooms = me.chatRooms.map((e) => e).toList();
+      userRooms.insert(0, roomId);
+
+      final friendRooms = friend.chatRooms.map((e) => e).toList();
+      friendRooms.insert(0, roomId);
+
+      final room = RoomEntity(
+        id: roomId,
+        time: Entity.timeMills,
+        type: ChattingType.none,
+        owner: me.id,
+        contributor: friend.id,
+      );
+
+      await createRoomUseCase.call(entity: room);
+      await updateUserRoomUseCase.call(uid: me.id, rooms: userRooms);
+      await updateUserRoomUseCase.call(uid: friend.id, rooms: friendRooms);
+    }
+  }
+
   Future<void> update({
     required String uid,
     required Map<String, dynamic> map,
@@ -64,6 +100,12 @@ class UserCubit extends Cubit<CubitState> {
     } else {
       emit(state.copyWith(exception: 'User ID is not valid!'));
     }
+  }
+
+  Future<void> updateState({
+    required UserEntity entity,
+  }) async {
+    emit(state.copyWith(data: entity));
   }
 
   Future<void> get({

@@ -17,17 +17,30 @@ abstract class FireStoreDataSource<T extends Entity>
 
   FirebaseFirestore get database => _db ??= FirebaseFirestore.instance;
 
-  CollectionReference source(FirebaseFirestore database) =>
-      database.collection(path);
+  CollectionReference _source<R>(
+    R? Function(R parent)? source,
+  ) {
+    final parent = database.collection(path);
+    dynamic current = source?.call(parent as R);
+    if (current is CollectionReference) {
+      return current;
+    } else {
+      return parent;
+    }
+  }
 
   String get uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
-  Future<Response> insert(String id, Map<String, dynamic> data) async {
+  Future<Response> insert<R>(
+    String id,
+    Map<String, dynamic> data, {
+    R? Function(R parent)? source,
+  }) async {
     const response = Response();
     if (id.isNotEmpty) {
       //final reference = database.collection(path).doc(id);
-      final reference = source(database).doc(id);
+      final reference = _source(source).doc(id);
       return await reference.get().then((value) async {
         if (!value.exists) {
           await reference.set(data);
@@ -44,11 +57,15 @@ abstract class FireStoreDataSource<T extends Entity>
   }
 
   @override
-  Future<Response> update(String id, Map<String, dynamic> data) async {
+  Future<Response> update<R>(
+    String id,
+    Map<String, dynamic> data, {
+    R? Function(R parent)? source,
+  }) async {
     const response = Response();
     try {
       //await database.collection(path).doc(id).update(data);
-      await source(database).doc(id).update(data);
+      await _source(source).doc(id).update(data);
       return response.copyWith(result: true);
     } catch (_) {
       log.put("UPDATE", _.toString());
@@ -57,11 +74,14 @@ abstract class FireStoreDataSource<T extends Entity>
   }
 
   @override
-  Future<Response> delete(String id) async {
+  Future<Response> delete<R>(
+    String id, {
+    R? Function(R parent)? source,
+  }) async {
     const response = Response();
     try {
       //await database.collection(path).doc(id).delete();
-      await source(database).doc(id).delete();
+      await _source(source).doc(id).delete();
       return response.copyWith(result: true);
     } catch (_) {
       log.put("DELETE", _.toString());
@@ -70,11 +90,14 @@ abstract class FireStoreDataSource<T extends Entity>
   }
 
   @override
-  Future<Response<T>> get(String id) async {
+  Future<Response<T>> get<R>(
+    String id, {
+    R? Function(R parent)? source,
+  }) async {
     final response = Response<T>();
     try {
       //final result = await database.collection(path).doc(id).get();
-      final result = await source(database).doc(id).get();
+      final result = await _source(source).doc(id).get();
       log.put("GET", result);
       if (result.exists) {
         return response.copyWith(result: build(result.data()));
@@ -88,13 +111,14 @@ abstract class FireStoreDataSource<T extends Entity>
   }
 
   @override
-  Future<Response<List<T>>> gets({
+  Future<Response<List<T>>> gets<R>({
     bool onlyUpdatedData = false,
+    R? Function(R parent)? source,
   }) async {
     final response = Response<List<T>>();
     try {
       //final result = await database.collection(path).get();
-      final result = await source(database).get();
+      final result = await _source(source).get();
       log.put("GETS", result);
       if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
         if (onlyUpdatedData) {
@@ -118,16 +142,24 @@ abstract class FireStoreDataSource<T extends Entity>
   }
 
   @override
-  Future<Response<List<T>>> getUpdates() => gets(onlyUpdatedData: true);
+  Future<Response<List<T>>> getUpdates<R>({
+    R? Function(R parent)? source,
+  }) {
+    return gets(
+      onlyUpdatedData: true,
+      source: source,
+    );
+  }
 
   @override
-  Stream<Response<List<T>>> lives({
+  Stream<Response<List<T>>> lives<R>({
     bool onlyUpdatedData = false,
+    R? Function(R parent)? source,
   }) {
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      source(database).snapshots().listen((result) {
+      _source(source).snapshots().listen((result) {
         log.put("GETS", result);
         if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
           if (onlyUpdatedData) {

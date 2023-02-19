@@ -17,16 +17,32 @@ abstract class RealtimeDataSource<T extends Entity>
 
   FirebaseDatabase get database => _db ??= FirebaseDatabase.instance;
 
+  DatabaseReference _source<R>(
+    R? Function(R parent)? source,
+  ) {
+    final parent = database.ref(path);
+    dynamic current = source?.call(parent as R);
+    if (current is DatabaseReference) {
+      return current;
+    } else {
+      return parent;
+    }
+  }
+
   String get uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
-  Future<Response> insert(String id, Map<String, dynamic> data) async {
+  Future<Response> insert<R>(
+    String id,
+    Map<String, dynamic> data, {
+    R? Function(R parent)? source,
+  }) async {
     const response = Response();
     if (id.isNotEmpty) {
-      final reference = database.ref(path).child(id);
-      return await reference.get().then((value) async {
+      final ref = _source(source).child(id);
+      return await ref.get().then((value) async {
         if (!value.exists) {
-          await reference.set(data);
+          await ref.set(data);
           return response.copyWith(result: data);
         } else {
           log.put("INSERT", value);
@@ -40,10 +56,14 @@ abstract class RealtimeDataSource<T extends Entity>
   }
 
   @override
-  Future<Response> update(String id, Map<String, dynamic> data) async {
+  Future<Response> update<R>(
+    String id,
+    Map<String, dynamic> data, {
+    R? Function(R parent)? source,
+  }) async {
     const response = Response();
     try {
-      await database.ref(path).child(id).update(data);
+      await _source(source).child(id).update(data);
       return response.copyWith(result: true);
     } catch (_) {
       log.put("UPDATE", _.toString());
@@ -52,10 +72,13 @@ abstract class RealtimeDataSource<T extends Entity>
   }
 
   @override
-  Future<Response> delete(String id) async {
+  Future<Response> delete<R>(
+    String id, {
+    R? Function(R parent)? source,
+  }) async {
     const response = Response();
     try {
-      await database.ref(path).child(id).remove();
+      await _source(source).child(id).remove();
       return response.copyWith(result: true);
     } catch (_) {
       log.put("DELETE", _.toString());
@@ -64,10 +87,13 @@ abstract class RealtimeDataSource<T extends Entity>
   }
 
   @override
-  Future<Response<T>> get(String id) async {
+  Future<Response<T>> get<R>(
+    String id, {
+    R? Function(R parent)? source,
+  }) async {
     final response = Response<T>();
     try {
-      final result = await database.ref(path).child(id).get();
+      final result = await _source(source).child(id).get();
       log.put("GET", result);
       if (result.exists) {
         return response.copyWith(result: build(result.value));
@@ -81,12 +107,13 @@ abstract class RealtimeDataSource<T extends Entity>
   }
 
   @override
-  Future<Response<List<T>>> gets({
+  Future<Response<List<T>>> gets<R>({
     bool onlyUpdatedData = false,
+    R? Function(R parent)? source,
   }) async {
     final response = Response<List<T>>();
     try {
-      final result = await database.ref(path).get();
+      final result = await _source(source).get();
       log.put("GETS", result);
       if (result.exists) {
         List<T> list = result.children.map((e) {
@@ -103,16 +130,24 @@ abstract class RealtimeDataSource<T extends Entity>
   }
 
   @override
-  Future<Response<List<T>>> getUpdates() => gets(onlyUpdatedData: true);
+  Future<Response<List<T>>> getUpdates<R>({
+    R? Function(R parent)? source,
+  }) {
+    return gets(
+      onlyUpdatedData: true,
+      source: source,
+    );
+  }
 
   @override
-  Stream<Response<List<T>>> lives({
+  Stream<Response<List<T>>> lives<R>({
     bool onlyUpdatedData = false,
+    R? Function(R parent)? source,
   }) {
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      database.ref(path).onValue.listen((result) {
+      _source(source).onValue.listen((result) {
         log.put("GETS", result);
         if (result.snapshot.exists) {
           List<T> list = result.snapshot.children.map((e) {

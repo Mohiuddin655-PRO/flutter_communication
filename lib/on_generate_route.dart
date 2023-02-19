@@ -37,7 +37,7 @@ class OnGenerateRoute {
       case ChatPage.route:
         return routeBuilder(widget: _chat(settings.arguments));
       case SearchPage.route:
-        return routeBuilder(widget: _search());
+        return routeBuilder(widget: _search(settings.arguments));
       default:
         return routeBuilder(widget: const ErrorPage());
     }
@@ -130,9 +130,14 @@ Widget _chat(dynamic arguments) {
   );
 }
 
-Widget _search() {
-  return BlocProvider(
-    create: (context) => locator<AuthCubit>()..isLoggedIn,
+Widget _search(dynamic arguments) {
+  final data = arguments is Map<String, dynamic> ? arguments : null;
+  final user = data?["user"];
+  final userCubit = data?["user_cubit"];
+  return MultiBlocProvider(
+    providers: [
+      if (userCubit is UserCubit) BlocProvider.value(value: userCubit),
+    ],
     child: const SearchPage(),
   );
 }

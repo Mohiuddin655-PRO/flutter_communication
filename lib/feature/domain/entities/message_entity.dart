@@ -6,8 +6,8 @@ import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 class MessageEntity extends Entity {
   final bool isSeen;
-  final String? message;
-  final String? photo;
+  final String message;
+  final String photo;
   final Sender sender;
   final List<String> views;
 
@@ -15,8 +15,8 @@ class MessageEntity extends Entity {
     super.id = "",
     super.time,
     this.isSeen = false,
-    this.photo,
-    this.message,
+    this.photo = "",
+    this.message = "",
     this.sender = const Sender(),
     this.views = const [],
   });
@@ -46,7 +46,7 @@ class MessageEntity extends Entity {
     dynamic id, time;
     dynamic seen;
     dynamic message, photo;
-    dynamic sender, receiver;
+    dynamic sender;
     dynamic views;
     try {
       if (data is DataSnapshot) {

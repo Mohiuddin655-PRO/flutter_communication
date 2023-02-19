@@ -55,7 +55,7 @@ class _MessageTileState extends State<MessageTile> {
                     ),
             ),
             child: Text(
-              item.message ?? "",
+              item.message,
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 16,

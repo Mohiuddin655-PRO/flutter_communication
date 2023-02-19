@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/core/constants/colors.dart';
 import 'package:flutter_communication/core/utils/states/cubit_state.dart';
 import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
 import 'package:flutter_communication/feature/presentation/page/home/home_drawer.dart';
@@ -58,7 +57,16 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             ActionButton(
-              action: () => Navigator.pushNamed(context, SearchPage.route),
+              action: () {
+                return Navigator.pushNamed(
+                  context,
+                  SearchPage.route,
+                  arguments: {
+                    "user": user,
+                    "user_cubit": context.read<UserCubit>(),
+                  },
+                );
+              },
               icon: Icons.search,
               margin: const EdgeInsets.symmetric(horizontal: 8),
             ),

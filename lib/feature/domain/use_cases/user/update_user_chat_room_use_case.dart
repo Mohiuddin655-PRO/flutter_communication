@@ -3,16 +3,19 @@ import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import '../../../../core/common/responses/response.dart';
 import '../../repositories/database_repository.dart';
 
-class GetUserUseCase {
+class UpdateUserChatRoomUseCase {
   final DatabaseRepository<UserEntity> repository;
 
-  GetUserUseCase({
+  UpdateUserChatRoomUseCase({
     required this.repository,
   });
 
   Future<Response> call({
     required String uid,
+    required List<String> rooms,
   }) async {
-    return repository.get(uid);
+    return repository.update(uid, {
+      "chat_rooms": rooms,
+    });
   }
 }

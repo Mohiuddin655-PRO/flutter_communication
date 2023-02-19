@@ -17,16 +17,14 @@ import 'package:flutter_communication/feature/presentation/page/chat/chat_item.d
 import 'package:flutter_communication/utils/helpers/chat_helper.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-import '../../../../core/utils/helpers/auth_helper.dart';
 import '../../../domain/use_cases/chat/add_message_use_case.dart';
-import '../../../domain/use_cases/user/user_get_use_case.dart';
-import '../../widget/view.dart';
 
 class ChatBody extends StatefulWidget {
-  final UserEntity friend;
+  final UserEntity me, friend;
 
   const ChatBody({
     Key? key,
+    required this.me,
     required this.friend,
   }) : super(key: key);
 
@@ -38,7 +36,6 @@ class _ChatBodyState extends State<ChatBody> {
   late final cubit = context.read<UserCubit>();
   late final createRoom = locator<CreateRoomUseCase>();
   late final updateRoom = locator<UpdateRoomUseCase>();
-  late final getUser = locator<GetUserUseCase>();
   late final updateUser = locator<UserUpdateUseCase>();
   late final addMessage = locator<AddMessageUseCase>();
   late final liveMessage = locator<LiveMessagesUseCase>();
@@ -54,80 +51,66 @@ class _ChatBodyState extends State<ChatBody> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Response>(
-      future: getUser.call(uid: AuthHelper.uid),
-      builder: (context, snapshot) {
-        final me = snapshot.data?.result;
-        if (me is UserEntity) {
-          final roomId = ChatRoomHelper.roomId(
-            widget.friend.id,
-            me.chatRooms,
-          );
-          print("Room ID : $roomId");
-          return Column(
+    final roomId = ChatRoomHelper.roomId(
+      widget.friend.id,
+      widget.me.chatRooms,
+    );
+    return Column(
+      children: [
+        Expanded(
+          child: StreamBuilder(
+            stream: liveMessage.call(roomId: roomId),
+            builder: (context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return Container(
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(),
+                  );
+                case ConnectionState.active:
+                case ConnectionState.done:
+                  final response =
+                      snapshot.data != null ? snapshot.data as Response : null;
+                  return _Chats(items: response?.result ?? []);
+              }
+            },
+          ),
+        ),
+        SizedBox(
+          height: 80,
+          child: Row(
             children: [
-              Expanded(
-                child: StreamBuilder(
-                  stream: liveMessage.call(roomId: roomId),
-                  builder: (context, AsyncSnapshot snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
-                        return Container(
-                          alignment: Alignment.center,
-                          child: const CircularProgressIndicator(),
-                        );
-                      case ConnectionState.active:
-                      case ConnectionState.done:
-                        final response = snapshot.data != null
-                            ? snapshot.data as Response
-                            : null;
-                        return _Chats(items: response?.result ?? []);
-                    }
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 80,
-                child: Row(
-                  children: [
-                    Expanded(child: _Input(controller: _controller)),
-                    _SendButton(
-                      onClick: () {
-                        final data = MessageEntity(
-                          message: _controller.text,
-                          id: Entity.key,
-                          time: Entity.timeMills,
-                          sender: Sender(
-                            id: me.id,
-                            name: me.name,
-                            photo: me.photo,
-                          ),
-                        );
-                        sendMessage(roomId, me, data);
-                      },
+              Expanded(child: _Input(controller: _controller)),
+              _SendButton(
+                onClick: () {
+                  final data = MessageEntity(
+                    message: _controller.text,
+                    id: Entity.key,
+                    time: Entity.timeMills,
+                    sender: Sender(
+                      id: widget.me.id,
+                      name: widget.me.name,
+                      photo: widget.me.photo,
                     ),
-                  ],
-                ),
+                  );
+                  sendMessage(roomId, data);
+                },
               ),
             ],
-          );
-        } else {
-          return const View(
-            visible: false,
-          );
-        }
-      },
+          ),
+        ),
+      ],
     );
   }
 
-  void sendMessage(String roomId, UserEntity me, MessageEntity data) async {
+  void sendMessage(String roomId, MessageEntity data) async {
     if (items.isEmpty && _controller.text.isNotEmpty) {
       _controller.text = "";
-      if (!ChatRoomHelper.isRoomCreated(roomId, me.chatRooms)) {
+      if (!ChatRoomHelper.isRoomCreated(roomId, widget.me.chatRooms)) {
         await cubit.createRoom(
           roomId: roomId,
-          me: me,
+          me: widget.me,
           friend: widget.friend,
         );
       }

@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_communication/feature/data/remote/data_sources/chat_room_data_source.dart';
 import 'package:flutter_communication/feature/data/remote/data_sources/message_data_source.dart';
 import 'package:flutter_communication/feature/data/remote/data_sources/user_data_source.dart';
+import 'package:flutter_communication/feature/data/remote/repository_impls/chat_room_repository.dart';
 import 'package:flutter_communication/feature/data/remote/repository_impls/message_repository.dart';
 import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
+import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/add_message_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/delete_message_use_case.dart';
@@ -13,13 +16,17 @@ import 'package:flutter_communication/feature/domain/use_cases/chat/gets_message
 import 'package:flutter_communication/feature/domain/use_cases/chat/gets_update_message_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/live_messages_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat/update_message_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_room_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/chat_room/live_rooms_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/live_user_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/user/update_user_chat_room_use_case.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'feature/domain/repositories/database_repository.dart';
+import 'feature/domain/use_cases/chat_room/update_room_use_case.dart';
 import 'feature/presentation/cubits/message_cubit.dart';
 import 'index.dart';
 
@@ -73,8 +80,14 @@ void _repositories() {
   });
   locator.registerLazySingleton<DatabaseRepository<UserEntity>>(() {
     return UserRepository(
-      remoteDataSource: UserDataSource(),
-      localDataSource: locator(),
+      remote: UserDataSource(),
+      local: locator(),
+    );
+  });
+  locator.registerLazySingleton<DatabaseRepository<RoomEntity>>(() {
+    return ChatRoomRepository(
+      remote: ChatRoomDataSource(),
+      local: locator(),
     );
   });
   locator.registerLazySingleton<DatabaseRepository<MessageEntity>>(() {
@@ -116,11 +129,14 @@ void _useCases() {
   locator.registerLazySingleton<UserCreateUseCase>(() {
     return UserCreateUseCase(repository: locator());
   });
+  locator.registerLazySingleton<UpdateUserChatRoomUseCase>(() {
+    return UpdateUserChatRoomUseCase(repository: locator());
+  });
   locator.registerLazySingleton<UserUpdateUseCase>(() {
     return UserUpdateUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserGetUseCase>(() {
-    return UserGetUseCase(repository: locator());
+  locator.registerLazySingleton<GetUserUseCase>(() {
+    return GetUserUseCase(repository: locator());
   });
   locator.registerLazySingleton<UserGetsUseCase>(() {
     return UserGetsUseCase(repository: locator());
@@ -140,8 +156,17 @@ void _useCases() {
   locator.registerLazySingleton<LiveUsersUseCase>(() {
     return LiveUsersUseCase(repository: locator());
   });
-  //MESSAGE
-
+  // CHAT_ROOMS
+  locator.registerLazySingleton<CreateRoomUseCase>(() {
+    return CreateRoomUseCase(repository: locator());
+  });
+  locator.registerLazySingleton<UpdateRoomUseCase>(() {
+    return UpdateRoomUseCase(repository: locator());
+  });
+  locator.registerLazySingleton<LiveChatsUseCase>(() {
+    return LiveChatsUseCase(repository: locator());
+  });
+  // CHATS
   locator.registerLazySingleton<AddMessageUseCase>(() {
     return AddMessageUseCase(repository: locator());
   });
@@ -190,6 +215,8 @@ void _cubits() {
         userRemoveUseCase: locator(),
         userSaveUseCase: locator(),
         userUpdateUseCase: locator(),
+        updateUserRoomUseCase: locator(),
+        createRoomUseCase: locator(),
       ));
   locator.registerFactory<MessageCubit>(() => MessageCubit(
         addMessageUseCase: locator(),

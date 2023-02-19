@@ -6,61 +6,100 @@ import '../../../domain/entities/user_entity.dart';
 import '../../../domain/repositories/database_repository.dart';
 
 class UserRepository extends DatabaseRepository<UserEntity> {
-  final KeepUserDataSource localDataSource;
-  final FirebaseDataSource remoteDataSource;
+  final KeepUserDataSource local;
+  final FirebaseDataSource remote;
 
   UserRepository({
-    required this.localDataSource,
-    required this.remoteDataSource,
+    required this.local,
+    required this.remote,
   });
 
   @override
-  Future<Response> create(UserEntity entity) {
-    return remoteDataSource.insert(entity.id ?? '', entity.source);
+  Future<Response> create<R>(
+    UserEntity entity, [
+    R? Function(R parent)? source,
+  ]) {
+    return remote.insert(
+      entity.id,
+      entity.source,
+      source: source,
+    );
   }
 
   @override
-  Future<Response> update(String id, Map<String, dynamic> map) {
-    return remoteDataSource.update(id, map);
+  Future<Response> update<R>(
+    String id,
+    Map<String, dynamic> map, [
+    R? Function(R parent)? source,
+  ]) {
+    return remote.update(
+      id,
+      map,
+      source: source,
+    );
   }
 
   @override
-  Future<Response> delete(String id) {
-    return remoteDataSource.delete(id);
+  Future<Response> delete<R>(
+    String id, [
+    R? Function(R parent)? source,
+  ]) {
+    return remote.delete(
+      id,
+      source: source,
+    );
   }
 
   @override
-  Future<Response> get(String id) {
-    return remoteDataSource.get(id);
+  Future<Response> get<R>(
+    String id, [
+    R? Function(R parent)? source,
+  ]) {
+    return remote.get(
+      id,
+      source: source,
+    );
   }
 
   @override
-  Future<Response> gets() {
-    return remoteDataSource.gets();
+  Future<Response> gets<R>([
+    R? Function(R parent)? source,
+  ]) {
+    return remote.gets(
+      source: source,
+    );
   }
 
   @override
-  Future<Response> getUpdates() {
-    return remoteDataSource.getUpdates();
+  Future<Response> getUpdates<R>([
+    R? Function(R parent)? source,
+  ]) {
+    return remote.getUpdates(
+      source: source,
+    );
+  }
+
+  @override
+  Stream<Response> lives<R>([
+    R? Function(R parent)? source,
+  ]) {
+    return remote.lives(
+      source: source,
+    );
   }
 
   @override
   Future<Response> setCache(UserEntity entity) {
-    return localDataSource.insert(entity);
+    return local.insert(entity);
   }
 
   @override
   Future<Response> removeCache(String id) {
-    return localDataSource.remove(id);
+    return local.remove(id);
   }
 
   @override
   Future<Response> getCache(String id) {
-    return localDataSource.get(id);
-  }
-
-  @override
-  Stream<Response> lives() {
-    return remoteDataSource.lives();
+    return local.get(id);
   }
 }

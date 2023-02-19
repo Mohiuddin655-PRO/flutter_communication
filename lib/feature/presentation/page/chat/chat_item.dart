@@ -60,7 +60,7 @@ class _ChatItemState extends State<ChatItem> {
                     ),
             ),
             child: Text(
-              item.message ?? "",
+              item.message,
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 16,

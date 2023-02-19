@@ -1,13 +1,14 @@
 import 'package:equatable/equatable.dart';
 
-abstract class Entity<T> extends Equatable {
+abstract class Entity extends Equatable {
   final String id;
-  final int? time;
+  final int time;
 
   const Entity({
     required String? id,
-    this.time,
-  }) : id = id ?? "";
+    int? time,
+  })  : id = id ?? "",
+        time = time ?? 0;
 
   Map<String, dynamic> get source;
 
