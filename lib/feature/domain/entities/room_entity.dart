@@ -5,35 +5,36 @@ import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
 
 class RoomEntity extends Entity {
-  final MessageEntity recent;
   final String contributor;
   final String owner;
   final ChattingType type;
+  final MessageEntity recent;
 
   const RoomEntity({
     super.id = "",
     super.time,
-    this.type = ChattingType.none,
     this.contributor = "",
     this.owner = "",
+    this.type = ChattingType.none,
     this.recent = const MessageEntity(),
   });
 
   RoomEntity copyWith({
     String? id,
     int? time,
-    ChattingType? type,
-    MessageEntity? recent,
     String? owner,
     String? contributor,
+    ChattingType? type,
+    MessageEntity? recent,
+    List<String>? views,
   }) {
     return RoomEntity(
       id: id ?? this.id,
       time: time ?? this.time,
-      type: type ?? this.type,
-      recent: recent ?? this.recent,
       owner: owner ?? this.owner,
       contributor: contributor ?? this.contributor,
+      type: type ?? this.type,
+      recent: recent ?? this.recent,
     );
   }
 
@@ -45,17 +46,17 @@ class RoomEntity extends Entity {
       if (data is DataSnapshot) {
         id = data.child('id');
         time = data.child('time');
-        type = data.child('type');
-        recent = data.child('recent');
         owner = data.child('owner');
         contributor = data.child('contributor');
+        type = data.child('type');
+        recent = data.child('recent');
       } else {
         id = data['id'];
         time = data['time'];
-        type = data['type'];
-        recent = data['recent'];
         owner = data['owner'];
         contributor = data['contributor'];
+        type = data['type'];
+        recent = data['recent'];
       }
     } catch (e) {
       log(e.toString());
@@ -63,10 +64,10 @@ class RoomEntity extends Entity {
     return RoomEntity(
       id: id is String ? id : "",
       time: time is int ? time : 0,
-      type: ChattingType.from(type),
-      recent: MessageEntity.from(recent),
       owner: owner is String ? owner : "",
       contributor: contributor is String ? contributor : "",
+      type: ChattingType.from(type),
+      recent: MessageEntity.from(recent),
     );
   }
 

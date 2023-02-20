@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 class UserEntity extends Entity {
@@ -96,6 +97,8 @@ class UserEntity extends Entity {
     }
     return const UserEntity();
   }
+
+  bool get isCurrentUid => id == AuthHelper.uid;
 
   @override
   Map<String, dynamic> get source {

@@ -35,14 +35,14 @@ class _ChatItemState extends State<ChatItem> {
           final sender = snapshot.data?.result;
           if (sender is UserEntity) {
             return Row(
-              mainAxisAlignment: item.isCurrentUser
+              mainAxisAlignment: item.isCurrentUid
                   ? MainAxisAlignment.end
                   : MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                if (!item.isCurrentUser)
+                if (!item.isCurrentUid)
                   _UserAvatar(
-                    isMe: item.isCurrentUser,
+                    isMe: item.isCurrentUid,
                     item: sender,
                   ),
                 Container(
@@ -54,10 +54,10 @@ class _ChatItemState extends State<ChatItem> {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: item.isCurrentUser
+                    color: item.isCurrentUid
                         ? KColors.primary.shade200
                         : KColors.primary.shade50,
-                    borderRadius: item.isCurrentUser
+                    borderRadius: item.isCurrentUid
                         ? const BorderRadius.only(
                             topLeft: borderRadius,
                             topRight: borderRadius,
@@ -74,13 +74,13 @@ class _ChatItemState extends State<ChatItem> {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       fontSize: 16,
-                      color: item.isCurrentUser ? Colors.white : Colors.black,
+                      color: item.isCurrentUid ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
-                if (item.isCurrentUser)
+                if (item.isCurrentUid)
                   _UserAvatar(
-                    isMe: item.isCurrentUser,
+                    isMe: item.isCurrentUid,
                     item: sender,
                   ),
               ],

@@ -11,11 +11,12 @@ class TextView extends StatelessWidget {
   final FontWeight? textStyle;
   final EdgeInsetsGeometry? margin, padding;
   final int? maxLines;
+  final List<TextSpan>? spans;
   final Function()? onPressed;
 
   const TextView({
     Key? key,
-    required this.text,
+    this.text = "",
     this.width,
     this.height,
     this.visible = true,
@@ -27,6 +28,7 @@ class TextView extends StatelessWidget {
     this.margin,
     this.padding,
     this.maxLines,
+    this.spans,
     this.onPressed,
   }) : super(key: key);
 
@@ -41,8 +43,11 @@ class TextView extends StatelessWidget {
           height: height,
           padding: padding,
           margin: margin,
-          child: Text(
-            text,
+          child: Text.rich(
+            TextSpan(
+              text: text,
+              children: spans,
+            ),
             maxLines: maxLines,
             textAlign: textAlign,
             overflow: textOverflow,

@@ -47,6 +47,7 @@ class MessageEntity extends Entity {
     dynamic message, photo;
     dynamic sender;
     dynamic views;
+    List<String> list = [];
     try {
       if (data is DataSnapshot) {
         id = data.child('id');
@@ -68,6 +69,7 @@ class MessageEntity extends Entity {
     } catch (e) {
       log(e.toString());
     }
+    list = views is List ? views.map((e) => e.toString()).toList() : <String>[];
     return MessageEntity(
       id: id is String ? id : "",
       time: time is int ? time : 0,
@@ -75,11 +77,11 @@ class MessageEntity extends Entity {
       photo: photo is String ? photo : "",
       message: message is String ? message : "",
       sender: sender is String ? sender : "",
-      views: views is List<String> || views is Map ? views : [],
+      views: list,
     );
   }
 
-  bool get isCurrentUser => AuthHelper.uid == sender;
+  bool get isCurrentUid => AuthHelper.uid == sender;
 
   @override
   Map<String, dynamic> get source {
@@ -90,6 +92,7 @@ class MessageEntity extends Entity {
       "message": message,
       "photo": photo,
       "sender": sender,
+      "views": views,
     };
   }
 
@@ -101,6 +104,7 @@ class MessageEntity extends Entity {
         photo,
         message,
         sender,
+        views,
       ];
 }
 

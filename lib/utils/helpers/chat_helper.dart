@@ -25,4 +25,20 @@ class ChatRoomHelper {
   static bool isRoomCreated(String roomId, List<String> rooms) {
     return rooms.contains(roomId);
   }
+
+  static bool isSeen(
+    String sender, {
+    bool isSeen = false,
+    List<String>? views,
+  }) {
+    final uid = AuthHelper.uid;
+    final list = views ?? [];
+    return uid == sender || isSeen || list.contains(uid);
+  }
+
+  static bool isSeenPermissioned(String sender, [List<String>? views]) {
+    final uid = AuthHelper.uid;
+    final list = views ?? [];
+    return uid != sender && !list.contains(uid);
+  }
 }

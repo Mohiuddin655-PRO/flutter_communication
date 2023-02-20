@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_communication/core/common/responses/response.dart';
 import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
+import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
+import 'package:flutter_communication/feature/domain/use_cases/chat_room/update_room_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/live_user_use_case.dart';
 import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
 
@@ -14,12 +16,12 @@ class ChatPage extends StatefulWidget {
   static const String title = "Chat";
   static const String route = "chat";
 
-  final String roomId;
+  final RoomEntity room;
   final UserEntity user;
 
   const ChatPage({
     Key? key,
-    required this.roomId,
+    required this.room,
     required this.user,
   }) : super(key: key);
 
@@ -29,10 +31,12 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late final cubit = context.read<UserCubit>();
+  late final updateRoom = locator<UpdateRoomUseCase>();
   late final liveUser = locator<LiveUserUseCase>();
 
   @override
   Widget build(BuildContext context) {
+    updateSeen();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -40,9 +44,9 @@ class _ChatPageState extends State<ChatPage> {
           widget.user.name.isNotEmpty ? widget.user.name : ChatPage.title,
         ),
       ),
-      body: widget.roomId.isNotEmpty
+      body: widget.room.id.isNotEmpty
           ? ChatBody(
-              roomId: widget.roomId,
+              roomId: widget.room.id,
               onCheckRoom: (roomId, data) async => true,
             )
           : StreamBuilder<Response>(
@@ -77,6 +81,14 @@ class _ChatPageState extends State<ChatPage> {
     } else {
       print("ROOM_CREATED : $roomId");
       return true;
+    }
+  }
+
+  void updateSeen() {
+    if (ChatRoomHelper.isSeenPermissioned(widget.room.recent.sender)) {
+      updateRoom.call(id: widget.room.id, data: {
+        "recent": widget.room.recent.copyWith(isSeen: true).source,
+      });
     }
   }
 }

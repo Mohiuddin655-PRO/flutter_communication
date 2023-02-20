@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
 import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
@@ -115,7 +116,7 @@ Widget _profile() {
 
 Widget _chat(dynamic arguments) {
   final data = arguments is Map<String, dynamic> ? arguments : null;
-  final roomId = data?["id"];
+  final room = data?["room"];
   final user = data?["user"];
   final userCubit = data?["user_cubit"];
   return MultiBlocProvider(
@@ -127,7 +128,7 @@ Widget _chat(dynamic arguments) {
     ],
     child: ChatPage(
       user: user is UserEntity ? user : const UserEntity(),
-      roomId: roomId is String ? roomId : "",
+      room: room is RoomEntity ? room : const RoomEntity(),
     ),
   );
 }
