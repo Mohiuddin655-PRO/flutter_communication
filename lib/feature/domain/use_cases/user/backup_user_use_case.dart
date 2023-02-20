@@ -1,14 +1,15 @@
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-
 import '../../../../core/common/responses/response.dart';
+import '../../entities/user_entity.dart';
 import '../../repositories/database_repository.dart';
 
-class LiveUserUseCase {
+class BackupUserUseCase {
   final DatabaseRepository<UserEntity> repository;
 
-  LiveUserUseCase({
+  BackupUserUseCase({
     required this.repository,
   });
 
-  Stream<Response> call({required String uid}) => repository.live(uid);
+  Future<Response> call(String id) async {
+    return repository.getCache(id);
+  }
 }

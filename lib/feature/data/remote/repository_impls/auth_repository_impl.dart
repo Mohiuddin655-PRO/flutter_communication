@@ -36,7 +36,8 @@ class AuthRepositoryImpl extends AuthRepository {
     required String email,
     required String password,
   }) {
-    return authDataSource.signUpWithEmailNPassword(email: email, password: password);
+    return authDataSource.signUpWithEmailNPassword(
+        email: email, password: password);
   }
 
   @override
@@ -44,7 +45,8 @@ class AuthRepositoryImpl extends AuthRepository {
     required String email,
     required String password,
   }) {
-    return authDataSource.signInWithEmailNPassword(email: email, password: password);
+    return authDataSource.signInWithEmailNPassword(
+        email: email, password: password);
   }
 
   @override

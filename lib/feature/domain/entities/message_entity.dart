@@ -8,7 +8,7 @@ class MessageEntity extends Entity {
   final bool isSeen;
   final String message;
   final String photo;
-  final Sender sender;
+  final String sender;
   final List<String> views;
 
   const MessageEntity({
@@ -17,7 +17,7 @@ class MessageEntity extends Entity {
     this.isSeen = false,
     this.photo = "",
     this.message = "",
-    this.sender = const Sender(),
+    this.sender = "",
     this.views = const [],
   });
 
@@ -27,8 +27,7 @@ class MessageEntity extends Entity {
     bool? isSeen,
     String? message,
     String? photo,
-    Sender? sender,
-    Sender? receiver,
+    String? sender,
     List<String>? views,
   }) {
     return MessageEntity(
@@ -75,12 +74,12 @@ class MessageEntity extends Entity {
       isSeen: seen is bool ? seen : false,
       photo: photo is String ? photo : "",
       message: message is String ? message : "",
-      sender: Sender.from(sender),
+      sender: sender is String ? sender : "",
       views: views is List<String> || views is Map ? views : [],
     );
   }
 
-  bool get isCurrentUser => AuthHelper.uid == sender.id;
+  bool get isCurrentUser => AuthHelper.uid == sender;
 
   @override
   Map<String, dynamic> get source {
@@ -90,7 +89,7 @@ class MessageEntity extends Entity {
       "seen": isSeen,
       "message": message,
       "photo": photo,
-      "sender": sender.source,
+      "sender": sender,
     };
   }
 

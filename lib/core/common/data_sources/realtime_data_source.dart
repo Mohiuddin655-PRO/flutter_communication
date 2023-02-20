@@ -95,7 +95,7 @@ abstract class RealtimeDataSource<T extends Entity>
     try {
       final result = await _source(source).child(id).get();
       log.put("GET", result);
-      if (result.exists) {
+      if (result.exists && result.value != null) {
         return response.copyWith(result: build(result.value));
       } else {
         return response.copyWith(message: "Data not found!");
@@ -123,7 +123,7 @@ abstract class RealtimeDataSource<T extends Entity>
       } else {
         return response.copyWith(message: "Data not found!");
       }
-    } on Exception catch (_) {
+    } catch (_) {
       log.put("GETS", _.toString());
       return response.copyWith(message: _.toString());
     }
@@ -137,6 +137,30 @@ abstract class RealtimeDataSource<T extends Entity>
       onlyUpdatedData: true,
       source: source,
     );
+  }
+
+  @override
+  Stream<Response<T>> live<R>(
+    String id, {
+    R? Function(R parent)? source,
+  }) {
+    final controller = StreamController<Response<T>>();
+    final response = Response<T>();
+    try {
+      _source(source).child(id).onValue.listen((event) {
+        log.put("GET", event);
+        if (event.snapshot.exists || event.snapshot.value != null) {
+          controller
+              .add(response.copyWith(result: build(event.snapshot.value)));
+        } else {
+          controller.addError("Data not found!");
+        }
+      });
+    } catch (_) {
+      log.put("GET", _.toString());
+      controller.addError(_);
+    }
+    return controller.stream;
   }
 
   @override
@@ -158,7 +182,7 @@ abstract class RealtimeDataSource<T extends Entity>
           controller.addError("Data not found!");
         }
       });
-    } on Exception catch (_) {
+    } catch (_) {
       log.put("GETS", _.toString());
       controller.addError(_);
     }

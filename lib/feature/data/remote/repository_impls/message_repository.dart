@@ -67,6 +67,17 @@ class MessageRepository extends DatabaseRepository<MessageEntity> {
   }
 
   @override
+  Stream<Response> live<R>(
+    String id, [
+    R? Function(R parent)? source,
+  ]) {
+    return remote.live(
+      id,
+      source: source,
+    );
+  }
+
+  @override
   Stream<Response> lives<R>([
     R? Function(R parent)? source,
   ]) {

@@ -6,8 +6,8 @@ class PreferenceHelper {
   final SharedPreferences mPreferences;
 
   PreferenceHelper(
-      this.mPreferences,
-      );
+    this.mPreferences,
+  );
 
   static PreferenceHelper of({required SharedPreferences preferences}) {
     return PreferenceHelper(preferences);

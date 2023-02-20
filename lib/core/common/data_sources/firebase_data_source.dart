@@ -23,6 +23,11 @@ abstract class FirebaseDataSource<T> {
     R? Function(R parent)? source,
   });
 
+  Stream<Response<T>> live<R>(
+    String id, {
+    R? Function(R parent)? source,
+  });
+
   Stream<Response<List<T>>> lives<R>({
     R? Function(R parent)? source,
   });

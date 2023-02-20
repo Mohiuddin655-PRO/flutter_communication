@@ -26,6 +26,11 @@ abstract class DatabaseRepository<T extends Entity> {
     R? Function(R parent)? source,
   ]);
 
+  Stream<Response> live<R>(
+    String id, [
+    R? Function(R parent)? source,
+  ]);
+
   Stream<Response> lives<R>([
     R? Function(R parent)? source,
   ]);

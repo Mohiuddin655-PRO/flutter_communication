@@ -3,10 +3,10 @@ import 'package:flutter_communication/feature/domain/repositories/database_repos
 import '../../../../core/common/responses/response.dart';
 import '../../entities/user_entity.dart';
 
-class UserCreateUseCase {
+class CreateUserUseCase {
   final DatabaseRepository<UserEntity> repository;
 
-  UserCreateUseCase({
+  CreateUserUseCase({
     required this.repository,
   });
 

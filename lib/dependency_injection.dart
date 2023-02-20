@@ -1,33 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_communication/feature/data/remote/data_sources/chat_room_data_source.dart';
-import 'package:flutter_communication/feature/data/remote/data_sources/message_data_source.dart';
-import 'package:flutter_communication/feature/data/remote/data_sources/user_data_source.dart';
-import 'package:flutter_communication/feature/data/remote/repository_impls/chat_room_repository.dart';
-import 'package:flutter_communication/feature/data/remote/repository_impls/message_repository.dart';
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/add_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/delete_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/get_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/gets_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/gets_update_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/live_messages_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/update_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_room_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/live_rooms_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/live_user_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/update_user_chat_room_use_case.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'feature/domain/repositories/database_repository.dart';
-import 'feature/domain/use_cases/chat_room/update_room_use_case.dart';
-import 'feature/presentation/cubits/message_cubit.dart';
 import 'index.dart';
 
 GetIt locator = GetIt.instance;
@@ -126,32 +104,35 @@ void _useCases() {
   });
 
   // USER SEGMENT
-  locator.registerLazySingleton<UserCreateUseCase>(() {
-    return UserCreateUseCase(repository: locator());
+  locator.registerLazySingleton<CreateUserUseCase>(() {
+    return CreateUserUseCase(repository: locator());
   });
   locator.registerLazySingleton<UpdateUserChatRoomUseCase>(() {
     return UpdateUserChatRoomUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserUpdateUseCase>(() {
-    return UserUpdateUseCase(repository: locator());
+  locator.registerLazySingleton<UpdateUserUseCase>(() {
+    return UpdateUserUseCase(repository: locator());
   });
   locator.registerLazySingleton<GetUserUseCase>(() {
     return GetUserUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserGetsUseCase>(() {
-    return UserGetsUseCase(repository: locator());
+  locator.registerLazySingleton<GetUsersUseCase>(() {
+    return GetUsersUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserDeleteUseCase>(() {
-    return UserDeleteUseCase(repository: locator());
+  locator.registerLazySingleton<DeleteUserUseCase>(() {
+    return DeleteUserUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserSaveUseCase>(() {
-    return UserSaveUseCase(repository: locator());
+  locator.registerLazySingleton<SaveUserUseCase>(() {
+    return SaveUserUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserBackupUseCase>(() {
-    return UserBackupUseCase(repository: locator());
+  locator.registerLazySingleton<BackupUserUseCase>(() {
+    return BackupUserUseCase(repository: locator());
   });
-  locator.registerLazySingleton<UserRemoveUseCase>(() {
-    return UserRemoveUseCase(repository: locator());
+  locator.registerLazySingleton<RemoveUserUseCase>(() {
+    return RemoveUserUseCase(repository: locator());
+  });
+  locator.registerLazySingleton<LiveUserUseCase>(() {
+    return LiveUserUseCase(repository: locator());
   });
   locator.registerLazySingleton<LiveUsersUseCase>(() {
     return LiveUsersUseCase(repository: locator());

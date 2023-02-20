@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_communication/core/common/responses/response.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_room_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/update_user_chat_room_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/user_remove_use_case.dart';
@@ -9,23 +10,23 @@ import '../../../core/utils/validators/validator.dart';
 import '../../domain/entities/base_entity.dart';
 import '../../domain/entities/room_entity.dart';
 import '../../domain/entities/user_entity.dart';
-import '../../domain/use_cases/user/user_backup_use_case.dart';
-import '../../domain/use_cases/user/user_create_use_case.dart';
+import '../../domain/use_cases/user/backup_user_use_case.dart';
+import '../../domain/use_cases/user/create_user_use_case.dart';
+import '../../domain/use_cases/user/get_user_use_case.dart';
 import '../../domain/use_cases/user/user_delete_use_case.dart';
-import '../../domain/use_cases/user/user_get_use_case.dart';
 import '../../domain/use_cases/user/user_gets_use_case.dart';
 import '../../domain/use_cases/user/user_update_use_case.dart';
 
 class UserCubit extends Cubit<CubitState> {
-  final UserBackupUseCase userBackupUseCase;
-  final UserCreateUseCase userCreateUseCase;
-  final UserDeleteUseCase userDeleteUseCase;
+  final BackupUserUseCase userBackupUseCase;
+  final CreateUserUseCase userCreateUseCase;
+  final DeleteUserUseCase userDeleteUseCase;
   final GetUserUseCase userGetUseCase;
-  final UserGetsUseCase userGetUpdatesUseCase;
-  final UserGetsUseCase userGetsUseCase;
-  final UserRemoveUseCase userRemoveUseCase;
-  final UserSaveUseCase userSaveUseCase;
-  final UserUpdateUseCase userUpdateUseCase;
+  final GetUsersUseCase userGetUpdatesUseCase;
+  final GetUsersUseCase userGetsUseCase;
+  final RemoveUserUseCase userRemoveUseCase;
+  final SaveUserUseCase userSaveUseCase;
+  final UpdateUserUseCase userUpdateUseCase;
   final UpdateUserChatRoomUseCase updateUserRoomUseCase;
   final CreateRoomUseCase createRoomUseCase;
 
@@ -58,11 +59,12 @@ class UserCubit extends Cubit<CubitState> {
     }
   }
 
-  Future<void> createRoom({
+  Future<bool> createRoom({
     required String roomId,
     required UserEntity me,
     required UserEntity friend,
   }) async {
+    const response = Response();
     if (Validator.isValidString(roomId) &&
         Validator.isValidString(me.id) &&
         Validator.isValidString(friend.id)) {
@@ -83,6 +85,9 @@ class UserCubit extends Cubit<CubitState> {
       await createRoomUseCase.call(entity: room);
       await updateUserRoomUseCase.call(uid: me.id, rooms: userRooms);
       await updateUserRoomUseCase.call(uid: friend.id, rooms: friendRooms);
+      return true;
+    } else {
+      return false;
     }
   }
 

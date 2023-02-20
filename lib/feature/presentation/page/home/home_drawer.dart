@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_communication/core/utils/states/state_value.dart';
+import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 import 'package:flutter_communication/feature/presentation/widget/drawer_navigation.dart';
 
 import '../../../../core/constants/colors.dart';
@@ -26,7 +27,7 @@ class HomeDrawer extends StatelessWidget {
         title: title ?? "Chatty",
         titleColor: Colors.white,
         titleStyle: FontWeight.bold,
-        image: photo != null
+        image: photo.isValid
             ? Container(
                 width: 120,
                 height: 120,

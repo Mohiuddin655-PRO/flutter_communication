@@ -3,10 +3,10 @@ import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import '../../../../core/common/responses/response.dart';
 import '../../repositories/database_repository.dart';
 
-class UserDeleteUseCase {
+class DeleteUserUseCase {
   final DatabaseRepository<UserEntity> repository;
 
-  UserDeleteUseCase({
+  DeleteUserUseCase({
     required this.repository,
   });
 

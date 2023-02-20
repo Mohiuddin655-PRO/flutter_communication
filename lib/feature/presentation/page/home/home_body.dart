@@ -6,7 +6,7 @@ import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
 import 'package:flutter_communication/feature/domain/use_cases/chat_room/live_rooms_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/user_get_use_case.dart';
+import 'package:flutter_communication/feature/domain/use_cases/user/get_user_use_case.dart';
 import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
 import 'package:flutter_communication/feature/presentation/widget/text_view.dart';
@@ -81,12 +81,13 @@ class _Rooms extends StatelessWidget {
         return _Room(
           item: item,
           //visible: item.id != AuthHelper.uid,
-          onClick: (item) {
+          onClick: (item, user) {
             Navigator.pushNamed(
               context,
               ChatPage.route,
               arguments: {
-                "user": item,
+                "id": item.id,
+                "user": user,
                 "user_cubit": userCubit,
               },
             );
@@ -100,7 +101,7 @@ class _Rooms extends StatelessWidget {
 class _Room extends StatefulWidget {
   final bool visible;
   final RoomEntity item;
-  final Function(UserEntity item)? onClick;
+  final Function(RoomEntity item, UserEntity user)? onClick;
 
   const _Room({
     Key? key,
@@ -131,7 +132,7 @@ class _RoomState extends State<_Room> {
             final user = snapshot.data?.result;
             if (user is UserEntity) {
               return ListTile(
-                onTap: () => widget.onClick?.call(user),
+                onTap: () => widget.onClick?.call(widget.item, user),
                 title: TextView(
                   text: user.name,
                 ),

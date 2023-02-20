@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -99,12 +100,12 @@ abstract class FireStoreDataSource<T extends Entity>
       //final result = await database.collection(path).doc(id).get();
       final result = await _source(source).doc(id).get();
       log.put("GET", result);
-      if (result.exists) {
+      if (result.exists && result.data() != null) {
         return response.copyWith(result: build(result.data()));
       } else {
         return response.copyWith(message: "Data not found!");
       }
-    } on Exception catch (_) {
+    } catch (_) {
       log.put("GET", _.toString());
       return response.copyWith(message: _.toString());
     }
@@ -135,7 +136,7 @@ abstract class FireStoreDataSource<T extends Entity>
       } else {
         return response.copyWith(message: "Data not found!");
       }
-    } on Exception catch (_) {
+    } catch (_) {
       log.put("GETS", _.toString());
       return response.copyWith(message: _.toString());
     }
@@ -152,6 +153,29 @@ abstract class FireStoreDataSource<T extends Entity>
   }
 
   @override
+  Stream<Response<T>> live<R>(
+    String id, {
+    R? Function(R parent)? source,
+  }) {
+    final controller = StreamController<Response<T>>();
+    final response = Response<T>();
+    try {
+      _source(source).doc(id).snapshots().listen((event) {
+        log.put("GET", event);
+        if (event.exists || event.data() != null) {
+          controller.add(response.copyWith(result: build(event.data())));
+        } else {
+          controller.addError("Data not found!");
+        }
+      });
+    } catch (_) {
+      log.put("GET", _.toString());
+      controller.addError(_);
+    }
+    return controller.stream;
+  }
+
+  @override
   Stream<Response<List<T>>> lives<R>({
     bool onlyUpdatedData = false,
     R? Function(R parent)? source,
@@ -159,16 +183,16 @@ abstract class FireStoreDataSource<T extends Entity>
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      _source(source).snapshots().listen((result) {
-        log.put("GETS", result);
-        if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
+      _source(source).snapshots().listen((event) {
+        log.put("GETS", event);
+        if (event.docs.isNotEmpty || event.docChanges.isNotEmpty) {
           if (onlyUpdatedData) {
-            List<T> list = result.docChanges.map((e) {
+            List<T> list = event.docChanges.map((e) {
               return build(e.doc.data());
             }).toList();
             controller.add(response.copyWith(result: list));
           } else {
-            List<T> list = result.docs.map((e) {
+            List<T> list = event.docs.map((e) {
               return build(e.data());
             }).toList();
             controller.add(response.copyWith(result: list));
@@ -177,7 +201,7 @@ abstract class FireStoreDataSource<T extends Entity>
           controller.addError("Data not found!");
         }
       });
-    } on Exception catch (_) {
+    } catch (_) {
       log.put("GETS", _.toString());
       controller.addError(_);
     }

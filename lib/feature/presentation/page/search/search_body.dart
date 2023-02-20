@@ -6,7 +6,7 @@ import '../../../../core/common/responses/response.dart';
 import '../../../../core/utils/helpers/auth_helper.dart';
 import '../../../../dependency_injection.dart';
 import '../../../domain/entities/user_entity.dart';
-import '../../../domain/use_cases/user/live_user_use_case.dart';
+import '../../../domain/use_cases/user/live_users_use_case.dart';
 import '../../cubits/user_cubit.dart';
 import '../../widget/error_view.dart';
 import '../../widget/text_view.dart';

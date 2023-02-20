@@ -13,8 +13,8 @@ import '../../domain/use_cases/auth/sign_in_with_google_use_case.dart';
 import '../../domain/use_cases/auth/sign_out_use_case.dart';
 import '../../domain/use_cases/auth/sign_up_with_credential_use_case.dart';
 import '../../domain/use_cases/auth/sign_up_with_email_n_password_use_case.dart';
-import '../../domain/use_cases/user/user_backup_use_case.dart';
-import '../../domain/use_cases/user/user_create_use_case.dart';
+import '../../domain/use_cases/user/backup_user_use_case.dart';
+import '../../domain/use_cases/user/create_user_use_case.dart';
 import '../../domain/use_cases/user/user_remove_use_case.dart';
 import '../../domain/use_cases/user/user_save_use_case.dart';
 
@@ -27,10 +27,10 @@ class AuthCubit extends Cubit<CubitState> {
   final SignInWithGoogleUseCase signInWithGoogleUseCase;
   final SignInWithBiometricUseCase signInWithBiometricUseCase;
   final SignOutUseCase signOutUseCase;
-  final UserCreateUseCase userCreateUseCase;
-  final UserSaveUseCase userSaveUseCase;
-  final UserBackupUseCase userBackupUseCase;
-  final UserRemoveUseCase userRemoveUseCase;
+  final CreateUserUseCase userCreateUseCase;
+  final SaveUserUseCase userSaveUseCase;
+  final BackupUserUseCase userBackupUseCase;
+  final RemoveUserUseCase userRemoveUseCase;
 
   AuthCubit({
     required this.isSignInUseCase,
