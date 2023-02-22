@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
@@ -13,19 +13,18 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
 
   ApiDataSource({required this.path});
 
-  FirebaseFirestore? _db;
+  dio.Dio? _db;
 
-  FirebaseFirestore get database => _db ??= FirebaseFirestore.instance;
+  dio.Dio get database => _db ??= dio.Dio();
 
-  CollectionReference _source<R>(
+  dio.Dio _source<R>(
     R? Function(R parent)? source,
   ) {
-    final parent = database.collection(path);
-    dynamic current = source?.call(parent as R);
-    if (current is CollectionReference) {
+    dynamic current = source?.call(database as R);
+    if (current is dio.Dio) {
       return current;
     } else {
-      return parent;
+      return database;
     }
   }
 
@@ -38,19 +37,14 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     R? Function(R parent)? source,
   }) async {
     const response = Response();
-    if (id.isNotEmpty) {
-      //final reference = database.collection(path).doc(id);
-      final reference = _source(source).doc(id);
-      return await reference.get().then((value) async {
-        if (!value.exists) {
-          await reference.set(data);
-          return response.copyWith(result: data);
-        } else {
-          log.put("INSERT", value);
-          return response.copyWith(
-              snapshot: value, message: 'Already inserted!');
-        }
-      });
+    if (data.isNotEmpty) {
+      final reference = await _source(source).put(path, data: data);
+      if (reference.statusCode == 200) {
+        return response.copyWith(result: reference.data);
+      } else {
+        return response.copyWith(
+            snapshot: reference, message: "Data unmodified!");
+      }
     } else {
       return response.copyWith(message: "Id isn't valid!");
     }
@@ -64,9 +58,21 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     const response = Response();
     try {
-      //await database.collection(path).doc(id).update(data);
-      await _source(source).doc(id).update(data);
-      return response.copyWith(result: true);
+      if (data.isNotEmpty) {
+        final reference = await _source(source).post(path, data: data);
+        if (reference.statusCode == 200) {
+          return response.copyWith(result: reference.data);
+        } else {
+          return response.copyWith(
+            snapshot: reference,
+            message: "Data unmodified!",
+          );
+        }
+      } else {
+        return response.copyWith(
+          message: "Id isn't valid!",
+        );
+      }
     } catch (_) {
       log.put("UPDATE", _.toString());
       return response.copyWith(message: _.toString());
@@ -80,9 +86,21 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     const response = Response();
     try {
-      //await database.collection(path).doc(id).delete();
-      await _source(source).doc(id).delete();
-      return response.copyWith(result: true);
+      if (id.isNotEmpty) {
+        final reference = await _source(source).delete(path, data: id);
+        if (reference.statusCode == 200) {
+          return response.copyWith(result: reference.data);
+        } else {
+          return response.copyWith(
+            snapshot: reference,
+            message: "Data unmodified!",
+          );
+        }
+      } else {
+        return response.copyWith(
+          message: "Id isn't valid!",
+        );
+      }
     } catch (_) {
       log.put("DELETE", _.toString());
       return response.copyWith(message: _.toString());
@@ -96,13 +114,20 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     final response = Response<T>();
     try {
-      //final result = await database.collection(path).doc(id).get();
-      final result = await _source(source).doc(id).get();
-      log.put("GET", result);
-      if (result.exists && result.data() != null) {
-        return response.copyWith(result: build(result.data()));
+      if (id.isNotEmpty) {
+        final reference = await _source(source).get(path, data: id);
+        if (reference.statusCode == 200) {
+          return response.copyWith(result: reference.data);
+        } else {
+          return response.copyWith(
+            snapshot: reference,
+            message: "Data unmodified!",
+          );
+        }
       } else {
-        return response.copyWith(message: "Data not found!");
+        return response.copyWith(
+          message: "Id isn't valid!",
+        );
       }
     } catch (_) {
       log.put("GET", _.toString());
@@ -117,23 +142,14 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     final response = Response<List<T>>();
     try {
-      //final result = await database.collection(path).get();
-      final result = await _source(source).get();
-      log.put("GETS", result);
-      if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
-        if (onlyUpdatedData) {
-          List<T> list = result.docChanges.map((e) {
-            return build(e.doc.data());
-          }).toList();
-          return response.copyWith(result: list);
-        } else {
-          List<T> list = result.docs.map((e) {
-            return build(e.data());
-          }).toList();
-          return response.copyWith(result: list);
-        }
+      final reference = await _source(source).post(path);
+      if (reference.statusCode == 200) {
+        return response.copyWith(result: reference.data);
       } else {
-        return response.copyWith(message: "Data not found!");
+        return response.copyWith(
+          snapshot: reference,
+          message: "Data unmodified!",
+        );
       }
     } catch (_) {
       log.put("GETS", _.toString());
@@ -159,12 +175,21 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final controller = StreamController<Response<T>>();
     final response = Response<T>();
     try {
-      _source(source).doc(id).snapshots().listen((event) {
-        log.put("GET", event);
-        if (event.exists || event.data() != null) {
-          controller.add(response.copyWith(result: build(event.data())));
+      Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
+        if (id.isNotEmpty) {
+          final reference = await _source(source).get(path, data: id);
+          if (reference.statusCode == 200) {
+            controller.add(response.copyWith(result: build(reference.data)));
+          } else {
+            controller.addError(response.copyWith(
+              snapshot: reference,
+              message: "Data unmodified!",
+            ));
+          }
         } else {
-          controller.addError("Data not found!");
+          controller.addError(response.copyWith(
+            message: "Id isn't valid!",
+          ));
         }
       });
     } catch (_) {
@@ -182,22 +207,25 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      _source(source).snapshots().listen((event) {
-        log.put("GETS", event);
-        if (event.docs.isNotEmpty || event.docChanges.isNotEmpty) {
+      Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
+        final reference = await _source(source).get(path);
+        if (reference.statusCode == 200) {
           if (onlyUpdatedData) {
-            List<T> list = event.docChanges.map((e) {
+            List<T> list = reference.data.map((e) {
               return build(e.doc.data());
             }).toList();
             controller.add(response.copyWith(result: list));
           } else {
-            List<T> list = event.docs.map((e) {
+            List<T> list = reference.data.map((e) {
               return build(e.data());
             }).toList();
             controller.add(response.copyWith(result: list));
           }
         } else {
-          controller.addError("Data not found!");
+          controller.addError(response.copyWith(
+            snapshot: reference,
+            message: "Data unmodified!",
+          ));
         }
       });
     } catch (_) {
