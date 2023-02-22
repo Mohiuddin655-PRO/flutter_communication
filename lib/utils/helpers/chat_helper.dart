@@ -22,6 +22,8 @@ class ChatRoomHelper {
     }
   }
 
+  static bool isRoomingUid(String roomId) => roomId.contains(AuthHelper.uid);
+
   static bool isRoomCreated(String roomId, List<String> rooms) {
     return rooms.contains(roomId);
   }

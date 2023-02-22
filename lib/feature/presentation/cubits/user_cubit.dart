@@ -76,7 +76,7 @@ class UserCubit extends Cubit<CubitState> {
 
       final room = RoomEntity(
         id: roomId,
-        time: Entity.timeMills,
+        timeMS: Entity.timeMills,
         type: ChattingType.none,
         owner: me.id,
         contributor: friend.id,

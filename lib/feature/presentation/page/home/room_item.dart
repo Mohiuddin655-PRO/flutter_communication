@@ -34,58 +34,63 @@ class _RoomItemState extends State<RoomItem> {
     return View(
       visible: widget.visible,
       child: FutureBuilder<Response>(
-          future: getUser.call(
-            uid: ChatRoomHelper.roomingUid(
-              owner: widget.item.owner,
-              contributor: widget.item.contributor,
-            ),
+        future: getUser.call(
+          uid: ChatRoomHelper.roomingUid(
+            owner: widget.item.owner,
+            contributor: widget.item.contributor,
           ),
-          builder: (context, snapshot) {
-            final user = snapshot.data?.result;
-            final isSeen = ChatRoomHelper.isSeen(
-              widget.item.recent.sender,
-              isSeen: widget.item.recent.isSeen,
-            );
-            if (user is UserEntity) {
-              return ListTile(
-                onTap: () => widget.onClick?.call(widget.item, user),
-                title: TextView(
-                  text: user.name,
-                  textStyle: isSeen ? FontWeight.normal : FontWeight.bold,
-                ),
-                subtitle: TextView(
-                  text: widget.item.recent.isCurrentUid ? "You : " : "",
-                  textStyle: isSeen ? FontWeight.normal : FontWeight.w600,
-                  spans: [
-                    TextSpan(
-                      text: widget.item.recent.message,
-                    ),
-                  ],
-                ),
-                leading: CircleAvatar(
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: user.photo.isValid
-                        ? Image.network(
-                            user.photo,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.asset(
-                            "assets/img/img_user.jpeg",
-                            fit: BoxFit.cover,
-                          ),
+        ),
+        builder: (context, snapshot) {
+          final user = snapshot.data?.result;
+          final isSeen = ChatRoomHelper.isSeen(
+            widget.item.recent.sender,
+            isSeen: widget.item.recent.isSeen,
+          );
+          if (user is UserEntity) {
+            return ListTile(
+              onTap: () => widget.onClick?.call(widget.item, user),
+              title: TextView(
+                text: user.name,
+                textStyle: isSeen ? FontWeight.normal : FontWeight.bold,
+              ),
+              subtitle: TextView(
+                text: widget.item.recent.isCurrentUid ? "You : " : "",
+                textSize: 12,
+                textStyle: isSeen ? FontWeight.normal : FontWeight.w600,
+                spans: [
+                  TextSpan(
+                    text: widget.item.recent.message,
                   ),
+                  TextSpan(
+                    text: " - ${widget.item.recent.time}",
+                  ),
+                ],
+              ),
+              leading: CircleAvatar(
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: user.photo.isValid
+                      ? Image.network(
+                          user.photo,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          "assets/img/img_user.jpeg",
+                          fit: BoxFit.cover,
+                        ),
                 ),
-              );
-            } else {
-              return Container();
-            }
-          }),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }

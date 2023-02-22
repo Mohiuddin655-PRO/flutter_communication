@@ -12,7 +12,7 @@ class RoomEntity extends Entity {
 
   const RoomEntity({
     super.id = "",
-    super.time,
+    super.timeMS,
     this.contributor = "",
     this.owner = "",
     this.type = ChattingType.none,
@@ -21,7 +21,7 @@ class RoomEntity extends Entity {
 
   RoomEntity copyWith({
     String? id,
-    int? time,
+    int? timeMS,
     String? owner,
     String? contributor,
     ChattingType? type,
@@ -30,7 +30,7 @@ class RoomEntity extends Entity {
   }) {
     return RoomEntity(
       id: id ?? this.id,
-      time: time ?? this.time,
+      timeMS: timeMS ?? this.timeMS,
       owner: owner ?? this.owner,
       contributor: contributor ?? this.contributor,
       type: type ?? this.type,
@@ -39,20 +39,20 @@ class RoomEntity extends Entity {
   }
 
   factory RoomEntity.from(dynamic data) {
-    dynamic id, time;
+    dynamic id, timeMS;
     dynamic type;
     dynamic recent, owner, contributor;
     try {
       if (data is DataSnapshot) {
         id = data.child('id');
-        time = data.child('time');
+        timeMS = data.child('time_mills');
         owner = data.child('owner');
         contributor = data.child('contributor');
         type = data.child('type');
         recent = data.child('recent');
       } else {
         id = data['id'];
-        time = data['time'];
+        timeMS = data['time_mills'];
         owner = data['owner'];
         contributor = data['contributor'];
         type = data['type'];
@@ -63,7 +63,7 @@ class RoomEntity extends Entity {
     }
     return RoomEntity(
       id: id is String ? id : "",
-      time: time is int ? time : 0,
+      timeMS: timeMS is int ? timeMS : 0,
       owner: owner is String ? owner : "",
       contributor: contributor is String ? contributor : "",
       type: ChattingType.from(type),
@@ -75,7 +75,7 @@ class RoomEntity extends Entity {
   Map<String, dynamic> get source {
     return {
       "id": id,
-      "time": time,
+      "time_mills": timeMS,
       "type": type.name,
       "owner": owner,
       "contributor": contributor,
@@ -86,7 +86,7 @@ class RoomEntity extends Entity {
   @override
   List<Object?> get props => [
         id,
-        time,
+        timeMS,
         type.name,
         recent.source,
         owner,

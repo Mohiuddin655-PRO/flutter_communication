@@ -13,7 +13,7 @@ class MessageEntity extends Entity {
 
   const MessageEntity({
     super.id = "",
-    super.time,
+    super.timeMS,
     this.isSeen = false,
     this.photo = "",
     this.message = "",
@@ -23,7 +23,7 @@ class MessageEntity extends Entity {
 
   MessageEntity copyWith({
     String? id,
-    int? time,
+    int? timeMS,
     bool? isSeen,
     String? message,
     String? photo,
@@ -32,7 +32,7 @@ class MessageEntity extends Entity {
   }) {
     return MessageEntity(
       id: id ?? this.id,
-      time: time ?? this.time,
+      timeMS: timeMS ?? this.timeMS,
       isSeen: isSeen ?? this.isSeen,
       message: message ?? this.message,
       photo: photo ?? this.photo,
@@ -42,7 +42,7 @@ class MessageEntity extends Entity {
   }
 
   factory MessageEntity.from(dynamic data) {
-    dynamic id, time;
+    dynamic id, timeMS;
     dynamic seen;
     dynamic message, photo;
     dynamic sender;
@@ -51,7 +51,7 @@ class MessageEntity extends Entity {
     try {
       if (data is DataSnapshot) {
         id = data.child('id');
-        time = data.child('time');
+        timeMS = data.child('time_mills');
         seen = data.child('seen');
         message = data.child('message');
         photo = data.child('photo');
@@ -59,7 +59,7 @@ class MessageEntity extends Entity {
         views = data.child('views');
       } else {
         id = data['id'];
-        time = data['time'];
+        timeMS = data['time_mills'];
         seen = data['seen'];
         message = data['message'];
         photo = data['photo'];
@@ -72,7 +72,7 @@ class MessageEntity extends Entity {
     list = views is List ? views.map((e) => e.toString()).toList() : <String>[];
     return MessageEntity(
       id: id is String ? id : "",
-      time: time is int ? time : 0,
+      timeMS: timeMS is int ? timeMS : 0,
       isSeen: seen is bool ? seen : false,
       photo: photo is String ? photo : "",
       message: message is String ? message : "",
@@ -87,7 +87,7 @@ class MessageEntity extends Entity {
   Map<String, dynamic> get source {
     return {
       "id": id,
-      "time": time,
+      "time_mills": timeMS,
       "seen": isSeen,
       "message": message,
       "photo": photo,
@@ -99,7 +99,7 @@ class MessageEntity extends Entity {
   @override
   List<Object?> get props => [
         id,
-        time,
+        timeMS,
         isSeen,
         photo,
         message,

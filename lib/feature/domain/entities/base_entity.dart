@@ -1,20 +1,31 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 
 abstract class Entity extends Equatable {
   final String id;
-  final int time;
+  final int timeMS;
 
   const Entity({
     required String? id,
-    int? time,
+    int? timeMS,
   })  : id = id ?? "",
-        time = time ?? 0;
+        timeMS = timeMS ?? 0;
 
   Map<String, dynamic> get source;
 
   static String get key => timeMills.toString();
 
   static int get timeMills => DateTime.now().millisecondsSinceEpoch;
+
+  String get time {
+    final date = DateTime.fromMillisecondsSinceEpoch(timeMS);
+    return DateFormat("hh:mm a").format(date);
+  }
+
+  String get date {
+    final date = DateTime.fromMillisecondsSinceEpoch(timeMS);
+    return DateFormat("MMM dd, yyyy").format(date);
+  }
 
   @override
   String toString() => source.toString();

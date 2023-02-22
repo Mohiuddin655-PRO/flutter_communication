@@ -82,7 +82,7 @@ class _ChatBodyState extends State<ChatBody> {
                     final data = MessageEntity(
                       message: _controller.text,
                       id: Entity.key,
-                      time: Entity.timeMills,
+                      timeMS: Entity.timeMills,
                       sender: AuthHelper.uid,
                     );
                     sendMessage(widget.roomId, data);
