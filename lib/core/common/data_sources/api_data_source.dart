@@ -1,27 +1,28 @@
 import 'dart:async';
+import 'dart:core';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
 import 'data_source.dart';
 
-abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
+abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   final String path;
 
-  RealtimeDataSource({required this.path});
+  ApiDataSource({required this.path});
 
-  FirebaseDatabase? _db;
+  FirebaseFirestore? _db;
 
-  FirebaseDatabase get database => _db ??= FirebaseDatabase.instance;
+  FirebaseFirestore get database => _db ??= FirebaseFirestore.instance;
 
-  DatabaseReference _source<R>(
+  CollectionReference _source<R>(
     R? Function(R parent)? source,
   ) {
-    final parent = database.ref(path);
+    final parent = database.collection(path);
     dynamic current = source?.call(parent as R);
-    if (current is DatabaseReference) {
+    if (current is CollectionReference) {
       return current;
     } else {
       return parent;
@@ -38,10 +39,11 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     const response = Response();
     if (id.isNotEmpty) {
-      final ref = _source(source).child(id);
-      return await ref.get().then((value) async {
+      //final reference = database.collection(path).doc(id);
+      final reference = _source(source).doc(id);
+      return await reference.get().then((value) async {
         if (!value.exists) {
-          await ref.set(data);
+          await reference.set(data);
           return response.copyWith(result: data);
         } else {
           log.put("INSERT", value);
@@ -50,7 +52,7 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
         }
       });
     } else {
-      return response.copyWith(message: "ID isn't valid!");
+      return response.copyWith(message: "Id isn't valid!");
     }
   }
 
@@ -62,7 +64,8 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     const response = Response();
     try {
-      await _source(source).child(id).update(data);
+      //await database.collection(path).doc(id).update(data);
+      await _source(source).doc(id).update(data);
       return response.copyWith(result: true);
     } catch (_) {
       log.put("UPDATE", _.toString());
@@ -77,7 +80,8 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     const response = Response();
     try {
-      await _source(source).child(id).remove();
+      //await database.collection(path).doc(id).delete();
+      await _source(source).doc(id).delete();
       return response.copyWith(result: true);
     } catch (_) {
       log.put("DELETE", _.toString());
@@ -92,10 +96,11 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     final response = Response<T>();
     try {
-      final result = await _source(source).child(id).get();
+      //final result = await database.collection(path).doc(id).get();
+      final result = await _source(source).doc(id).get();
       log.put("GET", result);
-      if (result.exists && result.value != null) {
-        return response.copyWith(result: build(result.value));
+      if (result.exists && result.data() != null) {
+        return response.copyWith(result: build(result.data()));
       } else {
         return response.copyWith(message: "Data not found!");
       }
@@ -112,13 +117,21 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     final response = Response<List<T>>();
     try {
+      //final result = await database.collection(path).get();
       final result = await _source(source).get();
       log.put("GETS", result);
-      if (result.exists) {
-        List<T> list = result.children.map((e) {
-          return build(e.value);
-        }).toList();
-        return response.copyWith(result: list);
+      if (result.docs.isNotEmpty || result.docChanges.isNotEmpty) {
+        if (onlyUpdatedData) {
+          List<T> list = result.docChanges.map((e) {
+            return build(e.doc.data());
+          }).toList();
+          return response.copyWith(result: list);
+        } else {
+          List<T> list = result.docs.map((e) {
+            return build(e.data());
+          }).toList();
+          return response.copyWith(result: list);
+        }
       } else {
         return response.copyWith(message: "Data not found!");
       }
@@ -146,11 +159,10 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
     final controller = StreamController<Response<T>>();
     final response = Response<T>();
     try {
-      _source(source).child(id).onValue.listen((event) {
+      _source(source).doc(id).snapshots().listen((event) {
         log.put("GET", event);
-        if (event.snapshot.exists || event.snapshot.value != null) {
-          controller
-              .add(response.copyWith(result: build(event.snapshot.value)));
+        if (event.exists || event.data() != null) {
+          controller.add(response.copyWith(result: build(event.data())));
         } else {
           controller.addError("Data not found!");
         }
@@ -170,13 +182,20 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      _source(source).onValue.listen((result) {
-        log.put("GETS", result);
-        if (result.snapshot.exists) {
-          List<T> list = result.snapshot.children.map((e) {
-            return build(e.value);
-          }).toList();
-          controller.add(response.copyWith(result: list));
+      _source(source).snapshots().listen((event) {
+        log.put("GETS", event);
+        if (event.docs.isNotEmpty || event.docChanges.isNotEmpty) {
+          if (onlyUpdatedData) {
+            List<T> list = event.docChanges.map((e) {
+              return build(e.doc.data());
+            }).toList();
+            controller.add(response.copyWith(result: list));
+          } else {
+            List<T> list = event.docs.map((e) {
+              return build(e.data());
+            }).toList();
+            controller.add(response.copyWith(result: list));
+          }
         } else {
           controller.addError("Data not found!");
         }

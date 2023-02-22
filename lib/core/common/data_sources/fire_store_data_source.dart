@@ -6,10 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
-import 'firebase_data_source.dart';
+import 'data_source.dart';
 
-abstract class FireStoreDataSource<T extends Entity>
-    extends FirebaseDataSource<T> {
+abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   final String path;
 
   FireStoreDataSource({required this.path});

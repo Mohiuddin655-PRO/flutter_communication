@@ -1,4 +1,4 @@
-import 'package:flutter_communication/core/common/data_sources/firebase_data_source.dart';
+import 'package:flutter_communication/core/common/data_sources/data_source.dart';
 
 import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
@@ -7,7 +7,7 @@ import '../../../domain/repositories/database_repository.dart';
 
 class UserRepository extends DatabaseRepository<UserEntity> {
   final KeepUserDataSource local;
-  final FirebaseDataSource remote;
+  final DataSource remote;
 
   UserRepository({
     required this.local,

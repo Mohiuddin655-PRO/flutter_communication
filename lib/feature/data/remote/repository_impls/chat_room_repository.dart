@@ -1,13 +1,13 @@
 import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
 import 'package:flutter_communication/feature/domain/repositories/database_repository.dart';
 
-import '../../../../core/common/data_sources/firebase_data_source.dart';
+import '../../../../core/common/data_sources/data_source.dart';
 import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
 
 class ChatRoomRepository extends DatabaseRepository<RoomEntity> {
   final KeepUserDataSource local;
-  final FirebaseDataSource remote;
+  final DataSource remote;
 
   ChatRoomRepository({
     required this.local,

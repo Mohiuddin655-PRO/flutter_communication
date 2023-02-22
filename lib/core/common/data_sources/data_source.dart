@@ -1,7 +1,7 @@
 import '../log_builders/log_builder.dart';
 import '../responses/response.dart';
 
-abstract class FirebaseDataSource<T> {
+abstract class DataSource<T> {
   Future<Response> insert<R>(
     String id,
     Map<String, dynamic> data, {
