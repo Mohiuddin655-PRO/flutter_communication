@@ -10,6 +10,7 @@ import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_
 import 'package:flutter_communication/feature/domain/use_cases/chat_room/update_room_use_case.dart';
 import 'package:flutter_communication/feature/domain/use_cases/user/user_update_use_case.dart';
 import 'package:flutter_communication/feature/presentation/page/chat/chat_item.dart';
+import 'package:flutter_communication/feature/presentation/widget/error_view.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../../../../core/utils/helpers/auth_helper.dart';
@@ -52,9 +53,9 @@ class _ChatBodyState extends State<ChatBody> {
     return Column(
       children: [
         Expanded(
-          child: StreamBuilder(
+          child: StreamBuilder<Response<dynamic>>(
             stream: liveMessage.call(roomId: widget.roomId),
-            builder: (context, AsyncSnapshot snapshot) {
+            builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
@@ -64,9 +65,15 @@ class _ChatBodyState extends State<ChatBody> {
                   );
                 case ConnectionState.active:
                 case ConnectionState.done:
-                  final response =
-                      snapshot.data != null ? snapshot.data as Response : null;
-                  return _Chats(items: response?.result ?? []);
+                  final data = snapshot.data?.result;
+                  if (data is List<MessageEntity>) {
+                    return _Chats(items: data);
+                  } else {
+                    return const ErrorView(
+                      icon: Icons.message,
+                      subtitle: "No message found!",
+                    );
+                  }
               }
             },
           ),

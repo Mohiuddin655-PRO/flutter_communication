@@ -72,14 +72,12 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<bool> createRoom(String roomId, UserEntity user) async {
     if (!ChatRoomHelper.isRoomCreated(roomId, user.chatRooms)) {
-      print("ROOM_INITIAL : $roomId");
       return cubit.createRoom(
         roomId: roomId,
         me: user,
         friend: widget.user,
       );
     } else {
-      print("ROOM_CREATED : $roomId");
       return true;
     }
   }
