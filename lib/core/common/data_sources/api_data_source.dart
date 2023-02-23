@@ -2,33 +2,45 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:dio/dio.dart' as dio;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
+import '../../../feature/domain/entities/base_entity.dart';
 import 'data_source.dart';
 
-abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
+class Source {
+  final String api;
   final String path;
 
-  ApiDataSource({required this.path});
+  const Source({
+    required this.api,
+    required this.path,
+  });
+}
+
+abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
+  final String api;
+  final String path;
+
+  ApiDataSource({
+    required this.path,
+    required this.api,
+  });
 
   dio.Dio? _db;
 
   dio.Dio get database => _db ??= dio.Dio();
 
-  dio.Dio _source<R>(
+  String _source<R>(
     R? Function(R parent)? source,
   ) {
-    dynamic current = source?.call(database as R);
-    if (current is dio.Dio) {
+    final reference = "$api/$path";
+    dynamic current = source?.call(reference as R);
+    if (current is String) {
       return current;
     } else {
-      return database;
+      return reference;
     }
   }
-
-  String get uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
   Future<Response> insert<R>(
@@ -38,7 +50,8 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     const response = Response();
     if (data.isNotEmpty) {
-      final reference = await _source(source).put(path, data: data);
+      final reference =
+          await database.post("${_source(source)}/$id", data: data);
       if (reference.statusCode == 200) {
         return response.copyWith(result: reference.data);
       } else {
@@ -59,7 +72,8 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     const response = Response();
     try {
       if (data.isNotEmpty) {
-        final reference = await _source(source).post(path, data: data);
+        final reference =
+            await database.put("${_source(source)}/$id", data: data);
         if (reference.statusCode == 200) {
           return response.copyWith(result: reference.data);
         } else {
@@ -87,7 +101,7 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     const response = Response();
     try {
       if (id.isNotEmpty) {
-        final reference = await _source(source).delete(path, data: id);
+        final reference = await database.delete("${_source(source)}/$id");
         if (reference.statusCode == 200) {
           return response.copyWith(result: reference.data);
         } else {
@@ -115,9 +129,10 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final response = Response<T>();
     try {
       if (id.isNotEmpty) {
-        final reference = await _source(source).get(path, data: id);
-        if (reference.statusCode == 200) {
-          return response.copyWith(result: reference.data);
+        final reference = await database.get("${_source(source)}/$id");
+        final data = reference.data;
+        if (reference.statusCode == 200 && data is Map) {
+          return response.copyWith(result: build(data));
         } else {
           return response.copyWith(
             snapshot: reference,
@@ -142,9 +157,13 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   }) async {
     final response = Response<List<T>>();
     try {
-      final reference = await _source(source).post(path);
-      if (reference.statusCode == 200) {
-        return response.copyWith(result: reference.data);
+      final reference = await database.get(_source(source));
+      final data = reference.data;
+      if (reference.statusCode == 200 && data is List<dynamic>) {
+        List<T> list = data.map((item) {
+          return build(item);
+        }).toList();
+        return response.copyWith(result: list);
       } else {
         return response.copyWith(
           snapshot: reference,
@@ -175,11 +194,12 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final controller = StreamController<Response<T>>();
     final response = Response<T>();
     try {
-      Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
+      Timer.periodic(const Duration(milliseconds: 3000), (timer) async {
         if (id.isNotEmpty) {
-          final reference = await _source(source).get(path, data: id);
-          if (reference.statusCode == 200) {
-            controller.add(response.copyWith(result: build(reference.data)));
+          final reference = await database.get("${_source(source)}/$id");
+          final data = reference.data;
+          if (reference.statusCode == 200 && data is Map) {
+            controller.add(response.copyWith(result: build(data)));
           } else {
             controller.addError(response.copyWith(
               snapshot: reference,
@@ -207,20 +227,14 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final controller = StreamController<Response<List<T>>>();
     final response = Response<List<T>>();
     try {
-      Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
-        final reference = await _source(source).get(path);
-        if (reference.statusCode == 200) {
-          if (onlyUpdatedData) {
-            List<T> list = reference.data.map((e) {
-              return build(e.doc.data());
-            }).toList();
-            controller.add(response.copyWith(result: list));
-          } else {
-            List<T> list = reference.data.map((e) {
-              return build(e.data());
-            }).toList();
-            controller.add(response.copyWith(result: list));
-          }
+      Timer.periodic(const Duration(milliseconds: 3000), (timer) async {
+        final reference = await database.get(_source(source));
+        final data = reference.data;
+        if (reference.statusCode == 200 && data is List<dynamic>) {
+          List<T> list = data.map((item) {
+            return build(item);
+          }).toList();
+          controller.add(response.copyWith(result: list));
         } else {
           controller.addError(response.copyWith(
             snapshot: reference,
