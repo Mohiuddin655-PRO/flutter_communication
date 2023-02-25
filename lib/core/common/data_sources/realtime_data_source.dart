@@ -31,14 +31,14 @@ abstract class RealtimeDataSource<T extends Entity> extends DataSource<T> {
   String get uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
-  Future<Response> insert<R>(
-    String id,
-    Map<String, dynamic> data, {
+  Future<Response> insert<R>({
+    required Map<String, dynamic> data,
+    String? id,
     R? Function(R parent)? source,
   }) async {
     const response = Response();
-    if (id.isNotEmpty) {
-      final ref = _source(source).child(id);
+    if ((id ?? "").isNotEmpty) {
+      final ref = _source(source).child(id ?? "");
       return await ref.get().then((value) async {
         if (!value.exists) {
           await ref.set(data);

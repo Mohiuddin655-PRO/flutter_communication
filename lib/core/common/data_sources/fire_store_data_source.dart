@@ -32,15 +32,15 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   String get uid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
   @override
-  Future<Response> insert<R>(
-    String id,
-    Map<String, dynamic> data, {
+  Future<Response> insert<R>({
+    required Map<String, dynamic> data,
+    String? id,
     R? Function(R parent)? source,
   }) async {
     const response = Response();
-    if (id.isNotEmpty) {
+    if ((id ?? "").isNotEmpty) {
       //final reference = database.collection(path).doc(id);
-      final reference = _source(source).doc(id);
+      final reference = _source(source).doc(id ?? "");
       return await reference.get().then((value) async {
         if (!value.exists) {
           await reference.set(data);

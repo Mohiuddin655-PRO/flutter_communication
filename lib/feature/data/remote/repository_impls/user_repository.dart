@@ -20,8 +20,8 @@ class UserRepository extends DatabaseRepository<UserEntity> {
     R? Function(R parent)? source,
   ]) {
     return remote.insert(
-      entity.id,
-      entity.source,
+      id: entity.id,
+      data: entity.source,
       source: source,
     );
   }

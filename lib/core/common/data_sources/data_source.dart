@@ -2,9 +2,9 @@ import '../log_builders/log_builder.dart';
 import '../responses/response.dart';
 
 abstract class DataSource<T> {
-  Future<Response> insert<R>(
-    String id,
-    Map<String, dynamic> data, {
+  Future<Response> insert<R>({
+    required Map<String, dynamic> data,
+    String? id,
     R? Function(R parent)? source,
   });
 

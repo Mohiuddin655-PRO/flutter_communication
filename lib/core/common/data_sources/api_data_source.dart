@@ -2,20 +2,9 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:dio/dio.dart' as dio;
-
 import '../../../../core/common/responses/response.dart';
 import '../../../feature/domain/entities/base_entity.dart';
 import 'data_source.dart';
-
-class Source {
-  final String api;
-  final String path;
-
-  const Source({
-    required this.api,
-    required this.path,
-  });
-}
 
 abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
   final String api;
@@ -42,17 +31,21 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     }
   }
 
+  String _url<R>(String id, R? Function(R parent)? source) =>
+      "${_source(source)}/$id";
+
   @override
-  Future<Response> insert<R>(
-    String id,
-    Map<String, dynamic> data, {
+  Future<Response> insert<R>({
+    required Map<String, dynamic> data,
+    String? id,
     R? Function(R parent)? source,
   }) async {
     const response = Response();
     if (data.isNotEmpty) {
-      final reference =
-          await database.post("${_source(source)}/$id", data: data);
-      if (reference.statusCode == 200) {
+      final url =
+          id != null && id.isNotEmpty ? _url(id, source) : _source(source);
+      final reference = await database.post(url, data: data);
+      if (reference.statusCode == 200 || reference.statusCode == 201) {
         return response.copyWith(result: reference.data);
       } else {
         return response.copyWith(
@@ -72,9 +65,8 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     const response = Response();
     try {
       if (data.isNotEmpty) {
-        final reference =
-            await database.put("${_source(source)}/$id", data: data);
-        if (reference.statusCode == 200) {
+        final reference = await database.put(_url(id, source), data: data);
+        if (reference.statusCode == 200 || reference.statusCode == 201) {
           return response.copyWith(result: reference.data);
         } else {
           return response.copyWith(
@@ -101,8 +93,8 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     const response = Response();
     try {
       if (id.isNotEmpty) {
-        final reference = await database.delete("${_source(source)}/$id");
-        if (reference.statusCode == 200) {
+        final reference = await database.delete(_url(id, source));
+        if (reference.statusCode == 200 || reference.statusCode == 201) {
           return response.copyWith(result: reference.data);
         } else {
           return response.copyWith(
@@ -129,7 +121,7 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final response = Response<T>();
     try {
       if (id.isNotEmpty) {
-        final reference = await database.get("${_source(source)}/$id");
+        final reference = await database.get(_url(id, source));
         final data = reference.data;
         if (reference.statusCode == 200 && data is Map) {
           return response.copyWith(result: build(data));
@@ -196,7 +188,7 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     try {
       Timer.periodic(const Duration(milliseconds: 3000), (timer) async {
         if (id.isNotEmpty) {
-          final reference = await database.get("${_source(source)}/$id");
+          final reference = await database.get(_url(id, source));
           final data = reference.data;
           if (reference.statusCode == 200 && data is Map) {
             controller.add(response.copyWith(result: build(data)));
@@ -228,9 +220,13 @@ abstract class ApiDataSource<T extends Entity> extends DataSource<T> {
     final response = Response<List<T>>();
     try {
       Timer.periodic(const Duration(milliseconds: 3000), (timer) async {
+        print("Lives [${_source(source)}]");
         final reference = await database.get(_source(source));
+        print("Lives [${_source(source)}] : $reference");
         final data = reference.data;
+        print("Lives [${_source(source)}] : ${reference.statusCode}");
         if (reference.statusCode == 200 && data is List<dynamic>) {
+          print("Lives [${_source(source)}] : $data");
           List<T> list = data.map((item) {
             return build(item);
           }).toList();

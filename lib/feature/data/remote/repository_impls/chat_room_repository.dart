@@ -20,8 +20,8 @@ class ChatRoomRepository extends DatabaseRepository<RoomEntity> {
     R? Function(R parent)? source,
   ]) {
     return remote.insert(
-      entity.id,
-      entity.source,
+      id: entity.id,
+      data: entity.source,
       source: source,
     );
   }
