@@ -3,9 +3,9 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
+import '../../../feature/domain/entities/base_entity.dart';
 import 'data_source.dart';
 
 abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
@@ -76,6 +76,7 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   @override
   Future<Response> delete<R>(
     String id, {
+    Map<String, dynamic>? extra,
     R? Function(R parent)? source,
   }) async {
     const response = Response();
@@ -92,6 +93,7 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   @override
   Future<Response<T>> get<R>(
     String id, {
+    Map<String, dynamic>? extra,
     R? Function(R parent)? source,
   }) async {
     final response = Response<T>();
@@ -113,6 +115,7 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   @override
   Future<Response<List<T>>> gets<R>({
     bool onlyUpdatedData = false,
+    Map<String, dynamic>? extra,
     R? Function(R parent)? source,
   }) async {
     final response = Response<List<T>>();
@@ -143,6 +146,7 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
 
   @override
   Future<Response<List<T>>> getUpdates<R>({
+    Map<String, dynamic>? extra,
     R? Function(R parent)? source,
   }) {
     return gets(
@@ -154,6 +158,7 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   @override
   Stream<Response<T>> live<R>(
     String id, {
+    Map<String, dynamic>? extra,
     R? Function(R parent)? source,
   }) {
     final controller = StreamController<Response<T>>();
@@ -177,6 +182,7 @@ abstract class FireStoreDataSource<T extends Entity> extends DataSource<T> {
   @override
   Stream<Response<List<T>>> lives<R>({
     bool onlyUpdatedData = false,
+    Map<String, dynamic>? extra,
     R? Function(R parent)? source,
   }) {
     final controller = StreamController<Response<List<T>>>();
