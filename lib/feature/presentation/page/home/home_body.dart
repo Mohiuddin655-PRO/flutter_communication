@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/core/common/responses/response.dart';
-import 'package:flutter_communication/core/utils/validators/validator.dart';
-import 'package:flutter_communication/dependency_injection.dart';
-import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/live_rooms_use_case.dart';
-import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
-import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
-import 'package:flutter_communication/feature/presentation/page/home/room_item.dart';
-import 'package:flutter_communication/feature/presentation/widget/view.dart';
-import 'package:flutter_communication/utils/helpers/chat_helper.dart';
 
+import '../../../../core/common/responses/response.dart';
+import '../../../../core/utils/validators/validator.dart';
+import '../../../../locator.dart';
+import '../../../../utils/helpers/chat_helper.dart';
+import '../../../domain/entities/room_entity.dart';
+import '../../../domain/entities/user_entity.dart';
+import '../../../domain/use_cases/chat_room/live_rooms_use_case.dart';
+import '../../cubits/user_cubit.dart';
 import '../../widget/error_view.dart';
+import '../../widget/view.dart';
+import '../chat/chat_page.dart';
+import 'room_item.dart';
 
 class HomeBody extends StatefulWidget {
   final UserEntity user;

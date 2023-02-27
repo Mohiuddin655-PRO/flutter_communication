@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/feature/presentation/page/splash/splash_page.dart';
 
 import 'core/constants/app_info.dart';
 import 'core/constants/themes.dart';
-import 'dependency_injection.dart' as di;
-import 'on_generate_route.dart';
+import 'locator.dart' as di;
+import 'feature/presentation/page/splash/splash_page.dart';
+import 'route.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

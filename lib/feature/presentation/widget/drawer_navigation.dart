@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/core/utils/states/state_value.dart';
+
+import '../../../core/utils/states/state_value.dart';
 
 class DrawerNavigation extends StatelessWidget {
   final DrawerNavigationHeader header;

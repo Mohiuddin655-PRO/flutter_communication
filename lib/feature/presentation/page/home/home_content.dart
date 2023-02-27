@@ -1,6 +1,6 @@
-import 'package:flutter_communication/feature/presentation/page/home/home_page.dart';
-import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
-import 'package:flutter_communication/feature/presentation/widget/drawer_navigation.dart';
+import '../../widget/drawer_navigation.dart';
+import '../profile/profile_page.dart';
+import 'home_page.dart';
 
 class HomeContent {
   const HomeContent._();

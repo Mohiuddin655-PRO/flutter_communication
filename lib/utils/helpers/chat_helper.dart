@@ -1,4 +1,4 @@
-import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
+import '../../core/utils/helpers/auth_helper.dart';
 
 class ChatRoomHelper {
   static String roomId(String uid, List<String> rooms) {

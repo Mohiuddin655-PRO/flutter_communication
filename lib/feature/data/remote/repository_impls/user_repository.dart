@@ -1,5 +1,4 @@
-import 'package:flutter_communication/core/common/data_sources/data_source.dart';
-
+import '../../../../core/common/data_sources/data_source.dart';
 import '../../../../core/common/data_sources/local_user_data_source.dart';
 import '../../../../core/common/responses/response.dart';
 import '../../../domain/entities/user_entity.dart';

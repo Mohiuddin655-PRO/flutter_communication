@@ -1,5 +1,3 @@
-import '../feature/data/local/contents/languages.dart';
-
 class RegionalTextProvider<T> {
   final T content;
   final SupportingLanguage language;
@@ -12,4 +10,13 @@ class RegionalTextProvider<T> {
   });
 
   String get value => builder.call(language, content);
+}
+
+enum SupportingLanguage {
+  en('en'),
+  bn('bn');
+
+  final String code;
+
+  const SupportingLanguage(this.code);
 }

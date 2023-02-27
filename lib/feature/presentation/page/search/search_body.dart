@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
-import '../../../../core/common/responses/response.dart';
 import '../../../../core/utils/helpers/auth_helper.dart';
-import '../../../../dependency_injection.dart';
+import '../../../../feature/index.dart';
+import '../../../../locator.dart';
 import '../../../domain/entities/user_entity.dart';
 import '../../../domain/use_cases/user/live_users_use_case.dart';
 import '../../cubits/user_cubit.dart';
@@ -29,18 +28,18 @@ class _SearchBodyState extends State<SearchBody> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: liveUsers.call(),
-      builder: (context, AsyncSnapshot snapshot) {
+      builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
             return const CircularProgressIndicator();
           case ConnectionState.active:
           case ConnectionState.done:
-            final response = snapshot.data;
-            if (response is Response) {
+            final data = snapshot.data?.result;
+            if (data is List<UserEntity> && data.length > 1) {
               return _Users(
                 userCubit: userCubit,
-                items: response.result,
+                items: data,
               );
             } else {
               return const ErrorView(

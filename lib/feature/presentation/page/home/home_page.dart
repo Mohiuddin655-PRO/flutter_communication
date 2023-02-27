@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/core/common/responses/response.dart';
-import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
-import 'package:flutter_communication/dependency_injection.dart';
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/live_user_use_case.dart';
-import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
-import 'package:flutter_communication/feature/presentation/page/home/home_drawer.dart';
-import 'package:flutter_communication/feature/presentation/page/profile/profile_body.dart';
-import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
-import 'package:flutter_communication/feature/presentation/page/search/search_page.dart';
 
+import '../../../../core/common/responses/response.dart';
 import '../../../../core/constants/app_info.dart';
+import '../../../../core/utils/helpers/auth_helper.dart';
+import '../../../../locator.dart';
+import '../../../domain/entities/user_entity.dart';
+import '../../../domain/use_cases/user/live_user_use_case.dart';
 import '../../cubits/auth_cubit.dart';
+import '../../cubits/user_cubit.dart';
 import '../../widget/screen.dart';
 import '../auth/sign_in/auth_sign_in_page.dart';
+import '../profile/profile_body.dart';
+import '../profile/profile_page.dart';
+import '../search/search_page.dart';
 import 'home_body.dart';
+import 'home_drawer.dart';
 
 class HomePage extends StatefulWidget {
   static const String title = "Home";

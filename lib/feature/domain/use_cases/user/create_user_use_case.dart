@@ -1,7 +1,6 @@
-import 'package:flutter_communication/feature/domain/repositories/database_repository.dart';
-
 import '../../../../core/common/responses/response.dart';
 import '../../entities/user_entity.dart';
+import '../../repositories/database_repository.dart';
 
 class CreateUserUseCase {
   final DatabaseRepository<UserEntity> repository;

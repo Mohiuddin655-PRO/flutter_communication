@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/core/constants/colors.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/get_user_use_case.dart';
 
-import '../../../../dependency_injection.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../locator.dart';
+import '../../../../feature/index.dart';
+import '../../../domain/entities/message_entity.dart';
 import '../../../domain/entities/user_entity.dart';
+import '../../../domain/use_cases/user/get_user_use_case.dart';
 
 class ChatItem extends StatefulWidget {
   final MessageEntity item;

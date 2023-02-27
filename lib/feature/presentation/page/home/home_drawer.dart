@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/core/utils/states/state_value.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
-import 'package:flutter_communication/feature/presentation/widget/drawer_navigation.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/states/state_value.dart';
+import '../../../../feature/index.dart';
+import '../../widget/drawer_navigation.dart';
 
 class HomeDrawer extends StatelessWidget {
   final int currentIndex;

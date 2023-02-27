@@ -1,22 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/core/common/responses/response.dart';
-import 'package:flutter_communication/dependency_injection.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/live_messages_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_room_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/update_room_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/user_update_use_case.dart';
-import 'package:flutter_communication/feature/presentation/page/chat/chat_item.dart';
-import 'package:flutter_communication/feature/presentation/widget/error_view.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
+import '../../../../core/common/responses/response.dart';
 import '../../../../core/utils/helpers/auth_helper.dart';
+import '../../../../locator.dart';
+import '../../../domain/entities/base_entity.dart';
+import '../../../domain/entities/message_entity.dart';
 import '../../../domain/entities/room_entity.dart';
 import '../../../domain/use_cases/chat/add_message_use_case.dart';
+import '../../../domain/use_cases/chat/live_messages_use_case.dart';
+import '../../../domain/use_cases/chat_room/create_room_use_case.dart';
+import '../../../domain/use_cases/chat_room/update_room_use_case.dart';
 import '../../../domain/use_cases/user/get_user_use_case.dart';
+import '../../../domain/use_cases/user/user_update_use_case.dart';
+import '../../widget/error_view.dart';
+import 'chat_item.dart';
 
 class ChatBody extends StatefulWidget {
   final String roomId;
@@ -227,12 +227,10 @@ class _Input extends StatelessWidget {
 }
 
 class _SendButton extends StatelessWidget {
-  final bool enabled;
   final Function()? onClick;
 
   const _SendButton({
     Key? key,
-    this.enabled = true,
     this.onClick,
   }) : super(key: key);
 
@@ -246,7 +244,7 @@ class _SendButton extends StatelessWidget {
         color: theme.primaryColor,
         borderRadius: BorderRadius.circular(50),
         child: InkWell(
-          onTap: enabled ? onClick : null,
+          onTap: onClick,
           child: Container(
             padding: const EdgeInsets.all(10),
             child: const Icon(

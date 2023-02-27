@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
+
+import '../../../core/utils/helpers/auth_helper.dart';
+import 'base_entity.dart';
 
 class MessageEntity extends Entity {
   final bool isSeen;

@@ -1,7 +1,6 @@
-import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
-import 'package:flutter_communication/feature/domain/repositories/database_repository.dart';
-
 import '../../../../core/common/responses/response.dart';
+import '../../entities/room_entity.dart';
+import '../../repositories/database_repository.dart';
 
 class UpdateRoomUseCase {
   final DatabaseRepository<RoomEntity> repository;

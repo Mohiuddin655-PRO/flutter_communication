@@ -1,6 +1,5 @@
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
-
 import '../../../core/common/responses/response.dart';
+import '../entities/base_entity.dart';
 
 abstract class DatabaseRepository<T extends Entity> {
   Future<Response> create<R>(

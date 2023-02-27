@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/feature/presentation/page/auth/sign_in/auth_sign_in_page.dart';
-import 'package:flutter_communication/feature/presentation/page/home/home_page.dart';
-import 'package:flutter_communication/feature/presentation/page/splash/splash_view.dart';
 
 import '../../../../core/utils/helpers/auth_helper.dart';
+import '../auth/sign_in/auth_sign_in_page.dart';
+import '../home/home_page.dart';
+import 'splash_view.dart';
 
 class SplashPage extends StatelessWidget {
   static const String title = "Splash";

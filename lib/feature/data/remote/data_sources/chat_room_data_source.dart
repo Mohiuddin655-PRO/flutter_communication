@@ -1,6 +1,6 @@
-import 'package:flutter_communication/contents.dart';
-import 'package:flutter_communication/core/common/data_sources/fire_store_data_source.dart';
-import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
+import '../../../../core/constants/contents.dart';
+import '../../../../core/common/data_sources/fire_store_data_source.dart';
+import '../../../domain/entities/room_entity.dart';
 
 class ChatRoomDataSource extends FireStoreDataSource<RoomEntity> {
   ChatRoomDataSource({

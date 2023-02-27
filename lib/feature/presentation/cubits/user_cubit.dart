@@ -1,20 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/core/common/responses/response.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/create_room_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/update_user_chat_room_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/user_remove_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/user_save_use_case.dart';
 
 import '../../../core/utils/states/cubit_state.dart';
 import '../../../core/utils/validators/validator.dart';
 import '../../domain/entities/base_entity.dart';
 import '../../domain/entities/room_entity.dart';
 import '../../domain/entities/user_entity.dart';
+import '../../domain/use_cases/chat_room/create_room_use_case.dart';
 import '../../domain/use_cases/user/backup_user_use_case.dart';
 import '../../domain/use_cases/user/create_user_use_case.dart';
 import '../../domain/use_cases/user/get_user_use_case.dart';
+import '../../domain/use_cases/user/update_user_chat_room_use_case.dart';
 import '../../domain/use_cases/user/user_delete_use_case.dart';
 import '../../domain/use_cases/user/user_gets_use_case.dart';
+import '../../domain/use_cases/user/user_remove_use_case.dart';
+import '../../domain/use_cases/user/user_save_use_case.dart';
 import '../../domain/use_cases/user/user_update_use_case.dart';
 
 class UserCubit extends Cubit<CubitState> {
@@ -64,7 +63,6 @@ class UserCubit extends Cubit<CubitState> {
     required UserEntity me,
     required UserEntity friend,
   }) async {
-    const response = Response();
     if (Validator.isValidString(roomId) &&
         Validator.isValidString(me.id) &&
         Validator.isValidString(friend.id)) {

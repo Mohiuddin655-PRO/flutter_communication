@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/feature/presentation/page/profile/profile_content.dart';
+
+import 'profile_content.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-import 'package:flutter_communication/feature/presentation/page/chat/chat_page.dart';
-import 'package:flutter_communication/feature/presentation/page/profile/profile_page.dart';
-import 'package:flutter_communication/feature/presentation/page/search/search_page.dart';
-import 'package:flutter_communication/feature/presentation/page/splash/splash_page.dart';
 
-import 'dependency_injection.dart';
+import 'locator.dart';
+import 'feature/domain/entities/room_entity.dart';
+import 'feature/domain/entities/user_entity.dart';
 import 'feature/presentation/cubits/auth_cubit.dart';
 import 'feature/presentation/cubits/message_cubit.dart';
 import 'feature/presentation/cubits/user_cubit.dart';
 import 'feature/presentation/page/auth/forget_password/auth_forget_password_page.dart';
 import 'feature/presentation/page/auth/sign_in/auth_sign_in_page.dart';
 import 'feature/presentation/page/auth/sign_up/auth_sign_up_page.dart';
+import 'feature/presentation/page/chat/chat_page.dart';
 import 'feature/presentation/page/error/error_page.dart';
 import 'feature/presentation/page/home/home_page.dart';
+import 'feature/presentation/page/profile/profile_page.dart';
+import 'feature/presentation/page/search/search_page.dart';
+import 'feature/presentation/page/splash/splash_page.dart';
 
 class OnGenerateRoute {
   static Route<dynamic> route(RouteSettings settings) {
@@ -135,7 +135,6 @@ Widget _chat(dynamic arguments) {
 
 Widget _search(dynamic arguments) {
   final data = arguments is Map<String, dynamic> ? arguments : null;
-  final user = data?["user"];
   final userCubit = data?["user_cubit"];
   return MultiBlocProvider(
     providers: [

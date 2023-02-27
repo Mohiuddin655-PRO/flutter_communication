@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/core/common/responses/response.dart';
-import 'package:flutter_communication/core/utils/helpers/auth_helper.dart';
-import 'package:flutter_communication/feature/domain/entities/room_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/user_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat_room/update_room_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/user/live_user_use_case.dart';
-import 'package:flutter_communication/feature/presentation/cubits/user_cubit.dart';
 
-import '../../../../dependency_injection.dart';
+import '../../../../core/common/responses/response.dart';
+import '../../../../core/utils/helpers/auth_helper.dart';
+import '../../../../locator.dart';
 import '../../../../utils/helpers/chat_helper.dart';
+import '../../../domain/entities/room_entity.dart';
+import '../../../domain/entities/user_entity.dart';
+import '../../../domain/use_cases/chat_room/update_room_use_case.dart';
+import '../../../domain/use_cases/user/live_user_use_case.dart';
+import '../../cubits/user_cubit.dart';
 import 'chat_body.dart';
 
 class ChatPage extends StatefulWidget {

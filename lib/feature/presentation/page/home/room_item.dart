@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
 import '../../../../core/common/responses/response.dart';
-import '../../../../dependency_injection.dart';
+import '../../../../locator.dart';
+import '../../../../feature/index.dart';
 import '../../../../utils/helpers/chat_helper.dart';
 import '../../../domain/entities/room_entity.dart';
 import '../../../domain/entities/user_entity.dart';

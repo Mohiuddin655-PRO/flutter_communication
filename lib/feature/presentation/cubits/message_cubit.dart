@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/delete_message_use_case.dart';
-import 'package:flutter_communication/feature/domain/use_cases/chat/update_message_use_case.dart';
 
 import '../../../core/utils/states/cubit_state.dart';
 import '../../../core/utils/validators/validator.dart';
+import '../../domain/entities/message_entity.dart';
 import '../../domain/use_cases/chat/add_message_use_case.dart';
+import '../../domain/use_cases/chat/delete_message_use_case.dart';
 import '../../domain/use_cases/chat/get_message_use_case.dart';
 import '../../domain/use_cases/chat/gets_message_use_case.dart';
 import '../../domain/use_cases/chat/gets_update_message_use_case.dart';
+import '../../domain/use_cases/chat/update_message_use_case.dart';
 
 class MessageCubit extends Cubit<CubitState> {
   final AddMessageUseCase addMessageUseCase;

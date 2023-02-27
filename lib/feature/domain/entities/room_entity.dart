@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
+
+import 'base_entity.dart';
+import 'message_entity.dart';
 
 class RoomEntity extends Entity {
   final String contributor;

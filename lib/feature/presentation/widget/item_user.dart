@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_communication/feature/domain/entities/base_entity.dart';
 
+import '../../../feature/index.dart';
 import '../../domain/entities/user_entity.dart';
 import 'text_view.dart';
 

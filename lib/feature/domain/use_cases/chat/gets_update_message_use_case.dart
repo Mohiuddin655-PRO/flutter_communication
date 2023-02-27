@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_communication/feature/domain/entities/message_entity.dart';
 
-import '../../../../contents.dart';
+import '../../../../core/constants/contents.dart';
 import '../../../../core/common/responses/response.dart';
+import '../../entities/message_entity.dart';
 import '../../repositories/database_repository.dart';
 
 class GetsUpdateMessageUseCase {

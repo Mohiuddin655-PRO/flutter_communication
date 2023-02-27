@@ -6,7 +6,7 @@ import '../../../../../core/common/responses/response.dart';
 import '../../../../../core/common/widgets/toast.dart';
 import '../../../../../core/utils/helpers/auth_helper.dart';
 import '../../../../../core/utils/validators/validator.dart';
-import '../../../../../dependency_injection.dart';
+import '../../../../../locator.dart';
 import '../../../../domain/entities/user_entity.dart';
 import '../../../cubits/auth_cubit.dart';
 import '../../../widget/button.dart';
