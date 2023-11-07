@@ -83,19 +83,22 @@ class _ChatBodyState extends State<ChatBody> {
           child: Row(
             children: [
               Expanded(child: _Input(controller: _controller)),
-              FutureBuilder(builder: (context, snapshot) {
-                return _SendButton(
-                  onClick: () {
-                    final data = MessageEntity(
-                      message: _controller.text,
-                      id: Entity.key,
-                      timeMS: Entity.timeMills,
-                      sender: AuthHelper.uid,
-                    );
-                    sendMessage(widget.roomId, data);
-                  },
-                );
-              }),
+              FutureBuilder(
+                future: null,
+                builder: (context, snapshot) {
+                  return _SendButton(
+                    onClick: () {
+                      final data = MessageEntity(
+                        message: _controller.text,
+                        id: Entity.key,
+                        timeMS: Entity.timeMills,
+                        sender: AuthHelper.uid,
+                      );
+                      sendMessage(widget.roomId, data);
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
